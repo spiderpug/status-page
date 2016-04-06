@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'timecop'
-require './app/controllers/status-page/health_controller'
+require './app/controllers/status_page/status_controller'
 
-describe StatusPage::HealthController, :type => :controller do
+describe StatusPage::StatusController, :type => :controller do
   routes { StatusPage::Engine.routes }
 
   let(:time) { Time.local(1990) }
@@ -136,7 +136,7 @@ describe StatusPage::HealthController, :type => :controller do
           get :check
         }.not_to raise_error
 
-        expect(response).to be_error
+        expect(response).to be_success
         expect(JSON.parse(response.body)).to eq([{
           'database' => {
             'message' => 'Exception',

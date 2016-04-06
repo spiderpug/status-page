@@ -7,7 +7,7 @@ describe StatusPage::Providers::Sidekiq do
     end
   end
 
-  subject { described_class.new(request: ActionController::TestRequest.new) }
+  subject { described_class.new(request: ActionController::TestRequest.create) }
 
   before do
     redis_conn = proc { Redis.new }
@@ -27,6 +27,7 @@ describe StatusPage::Providers::Sidekiq do
 
   describe '#check!' do
     it 'succesfully checks' do
+      Providers.stub_sidekiq_progresses_online
       expect {
         subject.check!
       }.not_to raise_error
@@ -34,10 +35,6 @@ describe StatusPage::Providers::Sidekiq do
 
     context 'failing' do
       context 'workers' do
-        before do
-          Providers.stub_sidekiq_workers_failure
-        end
-
         it 'fails check!' do
           expect {
             subject.check!

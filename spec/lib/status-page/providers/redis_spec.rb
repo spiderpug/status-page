@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe StatusPage::Providers::Redis do
-  subject { described_class.new(request: ActionController::TestRequest.new) }
+  subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#provider_name' do
     it { expect(described_class.provider_name).to eq('redis') }
@@ -32,6 +32,6 @@ describe StatusPage::Providers::Redis do
   end
 
   describe '#key' do
-    it { expect(subject.send(:key)).to eq('health:0.0.0.0') }
+    it { expect(subject.send(:key)).to eq('status-redis:0.0.0.0') }
   end
 end

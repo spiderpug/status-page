@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe StatusPage::Providers::Database do
-  subject { described_class.new(request: ActionController::TestRequest.new) }
+  subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#provider_name' do
     it { expect(described_class.provider_name).to eq('database') }

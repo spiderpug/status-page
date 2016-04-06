@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe StatusPage::Providers::Cache do
-  subject { described_class.new(request: ActionController::TestRequest.new) }
+describe StatusPage::Providers::Resque do
+  subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#provider_name' do
-    it { expect(described_class.provider_name).to eq('cache') }
+    it { expect(described_class.provider_name).to eq('resque') }
   end
 
   describe '#check!' do
@@ -16,22 +16,18 @@ describe StatusPage::Providers::Cache do
 
     context 'failing' do
       before do
-        Providers.stub_cache_failure
+        Providers.stub_resque_failure
       end
 
       it 'fails check!' do
         expect {
           subject.check!
-        }.to raise_error(StatusPage::Providers::CacheException)
+        }.to raise_error(StatusPage::Providers::ResqueException)
       end
     end
   end
 
   describe '#configurable?' do
     it { expect(described_class).not_to be_configurable }
-  end
-
-  describe '#key' do
-    it { expect(subject.send(:key)).to eq('health:0.0.0.0') }
   end
 end

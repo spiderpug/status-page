@@ -9,7 +9,7 @@ describe StatusPage do
     Timecop.freeze(time)
   end
 
-  let(:request) { ActionController::TestRequest.new }
+  let(:request) { ActionController::TestRequest.create }
 
   after do
     Timecop.return
@@ -146,10 +146,6 @@ describe StatusPage do
       end
 
       context 'sidekiq fails' do
-        before do
-          Providers.stub_sidekiq_workers_failure
-        end
-
         it 'succesfully checks' do
           expect(subject.check(request: request)).to eq(
             :results => [
