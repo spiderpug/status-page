@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe HealthMonitor do
+describe StatusPage do
   let(:time) { Time.local(1990) }
 
   before do
-    HealthMonitor.configuration = HealthMonitor::Configuration.new
+    StatusPage.configuration = StatusPage::Configuration.new
 
     Timecop.freeze(time)
   end
@@ -20,8 +20,8 @@ describe HealthMonitor do
       it 'configures a single provider' do
         expect {
           subject.configure(&:redis)
-        }.to change { HealthMonitor.configuration.providers }
-          .to(Set.new([HealthMonitor::Providers::Database, HealthMonitor::Providers::Redis]))
+        }.to change { StatusPage.configuration.providers }
+          .to(Set.new([StatusPage::Providers::Database, StatusPage::Providers::Redis]))
       end
 
       it 'configures a multiple providers' do
@@ -30,16 +30,16 @@ describe HealthMonitor do
             config.redis
             config.sidekiq
           end
-        }.to change { HealthMonitor.configuration.providers }
-          .to(Set.new([HealthMonitor::Providers::Database, HealthMonitor::Providers::Redis,
-            HealthMonitor::Providers::Sidekiq]))
+        }.to change { StatusPage.configuration.providers }
+          .to(Set.new([StatusPage::Providers::Database, StatusPage::Providers::Redis,
+            StatusPage::Providers::Sidekiq]))
       end
 
       it 'appends new providers' do
         expect {
           subject.configure(&:resque)
-        }.to change { HealthMonitor.configuration.providers }.to(
-          Set.new([HealthMonitor::Providers::Database, HealthMonitor::Providers::Resque]))
+        }.to change { StatusPage.configuration.providers }.to(
+          Set.new([StatusPage::Providers::Database, StatusPage::Providers::Resque]))
       end
     end
 
@@ -51,7 +51,7 @@ describe HealthMonitor do
           subject.configure do |config|
             config.error_callback = error_callback
           end
-        }.to change { HealthMonitor.configuration.error_callback }.to(error_callback)
+        }.to change { StatusPage.configuration.error_callback }.to(error_callback)
       end
     end
 
@@ -66,7 +66,7 @@ describe HealthMonitor do
           subject.configure do |config|
             config.basic_auth_credentials = expected
           end
-        }.to change { HealthMonitor.configuration.basic_auth_credentials }.to(expected)
+        }.to change { StatusPage.configuration.basic_auth_credentials }.to(expected)
       end
     end
   end

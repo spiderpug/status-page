@@ -1,6 +1,6 @@
-require 'health_monitor/providers/base'
+require 'status-page/providers/base'
 
-module HealthMonitor
+module StatusPage
   module Providers
     class DatabaseException < StandardError; end
 

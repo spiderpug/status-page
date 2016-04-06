@@ -1,9 +1,9 @@
-# health-monitor-rails
+# status-page
 
-[![Gem Version](https://badge.fury.io/rb/health-monitor-rails.png)](http://badge.fury.io/rb/health-monitor-rails)
-[![Build Status](https://travis-ci.org/lbeder/health-monitor-rails.png)](https://travis-ci.org/lbeder/health-monitor-rails)
-[![Dependency Status](https://gemnasium.com/lbeder/health-monitor-rails.png)](https://gemnasium.com/lbeder/health-monitor-rails)
-[![Coverage Status](https://coveralls.io/repos/lbeder/health-monitor-rails/badge.png)](https://coveralls.io/r/lbeder/health-monitor-rails)
+[![Gem Version](https://badge.fury.io/rb/status-page.png)](http://badge.fury.io/rb/status-page)
+[![Build Status](https://travis-ci.org/rails-engine/status-page.png)](https://travis-ci.org/rails-engine/status-page)
+[![Dependency Status](https://gemnasium.com/rails-engine/status-page.png)](https://gemnasium.com/rails-engine/status-page)
+[![Coverage Status](https://coveralls.io/repos/rails-engine/status-page/badge.png)](https://coveralls.io/r/rails-engine/status-page)
 
 This is a health monitoring Rails mountable plug-in, which checks various services (db, cache, sidekiq, redis, etc.).
 
@@ -11,10 +11,10 @@ Mounting this gem will add a '/check' route to your application, which can be us
 
 ## Setup
 
-If you are using bundler add health-monitor-rails to your Gemfile:
+If you are using bundler add status-page to your Gemfile:
 
 ```ruby
-gem 'health-monitor-rails'
+gem 'status-page'
 ```
 
 Then run:
@@ -26,14 +26,14 @@ $ bundle install
 Otherwise install the gem:
 
 ```bash
-$ gem install health-monitor-rails
+$ gem install status-page
 ```
 
 ## Usage
 You can mount this inside your app routes by adding this to config/routes.rb:
 
 ```ruby
-mount HealthMonitor::Engine, at: '/'
+mount StatusPage::Engine, at: '/'
 ```
 
 ## Supported service providers
@@ -50,7 +50,7 @@ The following services are currently supported:
 By default, only the database check is enabled. You can add more service providers by explicitly enabling them via an initializer:
 
 ```ruby
-HealthMonitor.configure do |config|
+StatusPage.configure do |config|
   config.cache
   config.redis
   config.sidekiq
@@ -62,7 +62,7 @@ end
 Some of the providers can also accept additional configuration:
 
 ```ruby
-HealthMonitor.configure do |config|
+StatusPage.configure do |config|
   config.sidekiq.configure do |sidekiq_config|
     sidekiq_config.latency = 3.hours
   end
@@ -80,10 +80,10 @@ It's also possible to add custom health check providers suited for your needs (o
 
 In order to add a custom provider, you'd need to:
 
-* Implement the `HealthMonitor::Providers::Base` class and its `check!` method (a check is considered as failed if it raises an exception):
+* Implement the `StatusPage::Providers::Base` class and its `check!` method (a check is considered as failed if it raises an exception):
 
 ```ruby
-class CustomProvider < HealthMonitor::Providers::Base
+class CustomProvider < StatusPage::Providers::Base
   def check!
     raise 'Oh oh!'
   end
@@ -92,7 +92,7 @@ end
 * Add its class to the configuration:
 
 ```ruby
-HealthMonitor.configure do |config|
+StatusPage.configure do |config|
   config.add_custom_provider(CustomProvider)
 end
 ```
@@ -101,7 +101,7 @@ end
 If you need to perform any additional error handling (for example, for additional error reporting), you can configure a custom error callback:
 
 ```ruby
-HealthMonitor.configure do |config|
+StatusPage.configure do |config|
   config.error_callback = proc do |e|
     logger.error "Health check failed with: #{e.message}"
 
@@ -114,7 +114,7 @@ end
 By default, the `/check` endpoint is not authenticated and is available to any user. You can authenticate using HTTP Basic Auth by providing authentication credentials:
 
 ```ruby
-HealthMonitor.configure do |config|
+StatusPage.configure do |config|
   config.basic_auth_credentials = {
     username: 'SECRET_NAME',
     password: 'Shhhhh!!!'
@@ -126,7 +126,7 @@ end
 By default, environmet variables is nil, you need to provide a Hash with your custom environmet variables:
 
 ```ruby
-HealthMonitor.configure do |config|
+StatusPage.configure do |config|
   config.environmet_variables = {
     build_number: 'BUILD_NUMBER',
     git_sha: 'GIT_SHA'

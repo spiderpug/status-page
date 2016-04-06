@@ -1,5 +1,7 @@
-HealthMonitor::Engine.routes.draw do
-  controller :health do
-    get :check
+StatusPage::Engine.routes.draw do
+  resources :status do
+    collection do
+      get :check
+    end
   end
 end

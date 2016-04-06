@@ -1,6 +1,6 @@
-require 'health_monitor/providers/base'
+require 'status-page/providers/base'
 
-module HealthMonitor
+module StatusPage
   module Providers
     class CacheException < StandardError; end
 
@@ -19,7 +19,7 @@ module HealthMonitor
       private
 
       def key
-        @key ||= ['health', request.try(:remote_ip)].join(':')
+        @key ||= ['status-cache', request.try(:remote_ip)].join(':')
       end
     end
   end

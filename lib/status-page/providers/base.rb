@@ -1,4 +1,4 @@
-module HealthMonitor
+module StatusPage
   module Providers
     class Base
       attr_reader :request

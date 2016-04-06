@@ -1,7 +1,7 @@
-require 'health_monitor/providers/base'
+require 'status-page/providers/base'
 require 'sidekiq/api'
 
-module HealthMonitor
+module StatusPage
   module Providers
     class SidekiqException < StandardError; end
 
@@ -35,7 +35,10 @@ module HealthMonitor
       end
 
       def check_workers!
-        ::Sidekiq::Workers.new.size
+        sidekiq_stats = ::Sidekiq::Stats.new
+        if sidekiq_stats.processes_size == 0
+          raise "Sidekiq alive processes is 0."
+        end
       end
 
       def check_latency!

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HealthMonitor::Providers::Resque do
+describe StatusPage::Providers::Resque do
   subject { described_class.new(request: ActionController::TestRequest.new) }
 
   describe '#provider_name' do
@@ -22,7 +22,7 @@ describe HealthMonitor::Providers::Resque do
       it 'fails check!' do
         expect {
           subject.check!
-        }.to raise_error(HealthMonitor::Providers::ResqueException)
+        }.to raise_error(StatusPage::Providers::ResqueException)
       end
     end
   end

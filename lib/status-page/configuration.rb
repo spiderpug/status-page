@@ -1,4 +1,4 @@
-module HealthMonitor
+module StatusPage
   class Configuration
     PROVIDERS = [:cache, :database, :redis, :resque, :sidekiq].freeze
 
@@ -11,16 +11,16 @@ module HealthMonitor
 
     PROVIDERS.each do |provider_name|
       define_method provider_name do |&_block|
-        require "health_monitor/providers/#{provider_name}"
+        require "status-page/providers/#{provider_name}"
 
-        add_provider("HealthMonitor::Providers::#{provider_name.capitalize}".constantize)
+        add_provider("StatusPage::Providers::#{provider_name.capitalize}".constantize)
       end
     end
 
     def add_custom_provider(custom_provider_class)
-      unless custom_provider_class < HealthMonitor::Providers::Base
+      unless custom_provider_class < StatusPage::Providers::Base
         raise ArgumentError.new 'custom provider class must implement '\
-          'HealthMonitor::Providers::Base'
+          'StatusPage::Providers::Base'
       end
 
       add_provider(custom_provider_class)

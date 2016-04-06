@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HealthMonitor::Providers::Redis do
+describe StatusPage::Providers::Redis do
   subject { described_class.new(request: ActionController::TestRequest.new) }
 
   describe '#provider_name' do
@@ -22,7 +22,7 @@ describe HealthMonitor::Providers::Redis do
       it 'fails check!' do
         expect {
           subject.check!
-        }.to raise_error(HealthMonitor::Providers::RedisException)
+        }.to raise_error(StatusPage::Providers::RedisException)
       end
     end
   end

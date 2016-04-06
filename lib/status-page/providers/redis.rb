@@ -1,7 +1,7 @@
-require 'health_monitor/providers/base'
+require 'status-page/providers/base'
 require 'redis/namespace'
 
-module HealthMonitor
+module StatusPage
   module Providers
     class RedisException < StandardError; end
 
@@ -23,7 +23,7 @@ module HealthMonitor
       private
 
       def key
-        @key ||= ['health', request.try(:remote_ip)].join(':')
+        @key ||= ['status-redis', request.try(:remote_ip)].join(':')
       end
     end
   end

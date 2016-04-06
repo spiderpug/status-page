@@ -1,6 +1,6 @@
-require 'health_monitor/configuration'
+require 'status-page/configuration'
 
-module HealthMonitor
+module StatusPage
   STATUSES = {
     ok: 'OK',
     error: 'ERROR'
@@ -51,4 +51,4 @@ module HealthMonitor
   end
 end
 
-HealthMonitor.configure
+StatusPage.configure

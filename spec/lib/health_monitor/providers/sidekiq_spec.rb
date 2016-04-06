@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe HealthMonitor::Providers::Sidekiq do
-  describe HealthMonitor::Providers::Sidekiq::Configuration do
+describe StatusPage::Providers::Sidekiq do
+  describe StatusPage::Providers::Sidekiq::Configuration do
     describe 'defaults' do
-      it { expect(described_class.new.latency).to eq(HealthMonitor::Providers::Sidekiq::Configuration::DEFAULT_LATENCY_TIMEOUT) }
+      it { expect(described_class.new.latency).to eq(StatusPage::Providers::Sidekiq::Configuration::DEFAULT_LATENCY_TIMEOUT) }
     end
   end
 
@@ -41,7 +41,7 @@ describe HealthMonitor::Providers::Sidekiq do
         it 'fails check!' do
           expect {
             subject.check!
-          }.to raise_error(HealthMonitor::Providers::SidekiqException)
+          }.to raise_error(StatusPage::Providers::SidekiqException)
         end
       end
 
@@ -53,7 +53,7 @@ describe HealthMonitor::Providers::Sidekiq do
         it 'fails check!' do
           expect {
             subject.check!
-          }.to raise_error(HealthMonitor::Providers::SidekiqException)
+          }.to raise_error(StatusPage::Providers::SidekiqException)
         end
       end
 
@@ -65,7 +65,7 @@ describe HealthMonitor::Providers::Sidekiq do
         it 'fails check!' do
           expect {
             subject.check!
-          }.to raise_error(HealthMonitor::Providers::SidekiqException)
+          }.to raise_error(StatusPage::Providers::SidekiqException)
         end
       end
     end
