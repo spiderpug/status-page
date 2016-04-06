@@ -1,9 +1,6 @@
 # status-page
 
-[![Gem Version](https://badge.fury.io/rb/status-page.png)](http://badge.fury.io/rb/status-page)
-[![Build Status](https://travis-ci.org/rails-engine/status-page.png)](https://travis-ci.org/rails-engine/status-page)
-[![Dependency Status](https://gemnasium.com/rails-engine/status-page.png)](https://gemnasium.com/rails-engine/status-page)
-[![Coverage Status](https://coveralls.io/repos/rails-engine/status-page/badge.png)](https://coveralls.io/r/rails-engine/status-page)
+[![Gem Version](https://badge.fury.io/rb/status-page.svg)](http://badge.fury.io/rb/status-page) [![Build Status](https://travis-ci.org/rails-engine/status-page.svg)](https://travis-ci.org/rails-engine/status-page) [![Dependency Status](https://gemnasium.com/rails-engine/status-page.svg)](https://gemnasium.com/rails-engine/status-page) [![Coverage Status](https://coveralls.io/repos/rails-engine/status-page/badge.svg)](https://coveralls.io/r/rails-engine/status-page)
 
 This is a health monitoring Rails mountable plug-in, which checks various services (db, cache, sidekiq, redis, etc.).
 
