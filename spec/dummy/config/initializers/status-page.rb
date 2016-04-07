@@ -1,5 +1,5 @@
-StatusPage.configure do |config|
-  config.cache
-  config.redis
-  config.sidekiq
+StatusPage.configure do
+  self.use :cache
+  self.use :redis
+  self.use :sidekiq
 end

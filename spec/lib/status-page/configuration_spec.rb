@@ -8,25 +8,21 @@ describe StatusPage::Configuration do
   end
 
   describe 'providers' do
-    StatusPage::Configuration::PROVIDERS.each do |service_name|
+    [:cache, :database, :redis, :resque, :sidekiq].each do |service_name|
       before do
         subject.instance_variable_set('@providers', Set.new)
 
         stub_const("StatusPage::Services::#{service_name.capitalize}", Class.new)
       end
 
-      it "responds to #{service_name}" do
-        expect(subject).to respond_to(service_name)
-      end
-
       it "configures #{service_name}" do
         expect {
-          subject.send(service_name)
+          subject.use(service_name)
         }.to change { subject.providers }.to(Set.new(["StatusPage::Services::#{service_name.capitalize}".constantize]))
       end
 
       it "returns #{service_name}'s class" do
-        expect(subject.send(service_name)).to eq("StatusPage::Services::#{service_name.capitalize}".constantize)
+        expect(subject.use(service_name)).to eq("StatusPage::Services::#{service_name.capitalize}".constantize)
       end
     end
   end

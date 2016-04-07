@@ -1,4 +1,3 @@
-require 'status-page/services/base'
 require 'redis/namespace'
 
 module StatusPage

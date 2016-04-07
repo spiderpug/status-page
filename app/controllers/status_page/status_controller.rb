@@ -24,9 +24,9 @@ module StatusPage
     end
 
     def authenticate_with_basic_auth
-      return true unless StatusPage.configuration.basic_auth_credentials
+      return true unless StatusPage.config.basic_auth_credentials
 
-      credentials = StatusPage.configuration.basic_auth_credentials
+      credentials = StatusPage.config.basic_auth_credentials
       authenticate_or_request_with_http_basic do |name, password|
         name == credentials[:username] && password == credentials[:password]
       end

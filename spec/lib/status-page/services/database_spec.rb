@@ -4,7 +4,7 @@ describe StatusPage::Services::Database do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#service_name' do
-    it { expect(described_class.service_name).to eq('database') }
+    it { expect(described_class.service_name).to eq('Database') }
   end
 
   describe '#check!' do

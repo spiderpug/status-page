@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    status-page (0.0.1)
+    status-page (0.1.1)
       rails (>= 4.2)
 
 GEM

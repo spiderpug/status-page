@@ -4,9 +4,8 @@ describe StatusPage do
   let(:time) { Time.local(1990) }
 
   before do
-    StatusPage.configuration = StatusPage::Configuration.new
-
-    allow(StatusPage.configuration).to receive(:interval).and_return(0)
+    allow(StatusPage).to receive(:config).and_return(StatusPage::Configuration.new)
+    allow(StatusPage.config).to receive(:interval).and_return(0)
 
     Timecop.freeze(time)
   end
@@ -21,29 +20,29 @@ describe StatusPage do
     describe 'providers' do
       it 'configures a single provider' do
         expect {
-          subject.configure do |config|
-            config.use :redis
+          subject.configure do
+            self.use :redis
           end
-        }.to change { StatusPage.configuration.providers }
+        }.to change { StatusPage.config.providers }
           .to(Set.new([StatusPage::Services::Redis]))
       end
 
       it 'configures a multiple providers' do
         expect {
-          subject.configure do |config|
-            config.use :redis
-            config.use :sidekiq
+          subject.configure do
+            self.use :redis
+            self.use :sidekiq
           end
-        }.to change { StatusPage.configuration.providers }
+        }.to change { StatusPage.config.providers }
           .to(Set.new([StatusPage::Services::Redis, StatusPage::Services::Sidekiq]))
       end
 
       it 'appends new providers' do
         expect {
-          subject.configure do |config|
-            config.use :resque
+          subject.configure do
+            self.use :resque
           end
-        }.to change { StatusPage.configuration.providers }.to(
+        }.to change { StatusPage.config.providers }.to(
           Set.new([StatusPage::Services::Resque]))
       end
     end
@@ -53,10 +52,10 @@ describe StatusPage do
         error_callback = proc {}
 
         expect {
-          subject.configure do |config|
-            config.error_callback = error_callback
+          subject.configure do
+            self.error_callback = error_callback
           end
-        }.to change { StatusPage.configuration.error_callback }.to(error_callback)
+        }.to change { StatusPage.config.error_callback }.to(error_callback)
       end
     end
 
@@ -68,10 +67,10 @@ describe StatusPage do
         }
 
         expect {
-          subject.configure do |config|
-            config.basic_auth_credentials = expected
+          subject.configure do
+            self.basic_auth_credentials = expected
           end
-        }.to change { StatusPage.configuration.basic_auth_credentials }.to(expected)
+        }.to change { StatusPage.config.basic_auth_credentials }.to(expected)
       end
     end
   end
@@ -89,9 +88,9 @@ describe StatusPage do
 
     context 'db and redis providers' do
       before do
-        subject.configure do |config|
-          config.use :database
-          config.use :redis
+        subject.configure do
+          self.use :database
+          self.use :redis
         end
       end
 
@@ -99,12 +98,12 @@ describe StatusPage do
         expect(subject.check(request: request)).to eq(
           :results => [
             {
-              name: 'database',
+              name: 'Database',
               message: '',
               status: 'OK'
             },
             {
-              name: 'redis',
+              name: 'Redis',
               message: '',
               status: 'OK'
             }
@@ -123,12 +122,12 @@ describe StatusPage do
           expect(subject.check(request: request)).to eq(
             :results => [
               {
-                name: 'database',
+                name: 'Database',
                 message: '',
                 status: 'OK'
               },
               {
-                name: 'redis',
+                name: 'Redis',
                 message: "different values (now: #{time.to_s(:db)}, fetched: false)",
                 status: 'ERROR'
               }
@@ -144,12 +143,12 @@ describe StatusPage do
           expect(subject.check(request: request)).to eq(
             :results => [
               {
-                name: 'database',
+                name: 'Database',
                 message: '',
                 status: 'OK'
               },
               {
-                name: 'redis',
+                name: 'Redis',
                 message: '',
                 status: 'OK'
               }
@@ -170,12 +169,12 @@ describe StatusPage do
           expect(subject.check(request: request)).to eq(
             :results => [
               {
-                name: 'database',
+                name: 'Database',
                 message: 'Exception',
                 status: 'ERROR'
               },
               {
-                name: 'redis',
+                name: 'Redis',
                 message: "different values (now: #{time.to_s(:db)}, fetched: false)",
                 status: 'ERROR'
               }
@@ -200,10 +199,11 @@ describe StatusPage do
       end
 
       before do
-        subject.configure do |config|
-          config.use :database
+        that = self
+        subject.configure do
+          self.use :database
 
-          config.error_callback = callback
+          self.error_callback = that.callback
         end
 
         Services.stub_database_failure
@@ -213,7 +213,7 @@ describe StatusPage do
         expect(subject.check(request: request)).to eq(
           :results => [
             {
-              name: 'database',
+              name: 'Database',
               message: 'Exception',
               status: 'ERROR'
             }

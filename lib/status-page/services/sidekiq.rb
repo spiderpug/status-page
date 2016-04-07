@@ -1,4 +1,3 @@
-require 'status-page/services/base'
 require 'sidekiq/api'
 
 module StatusPage
@@ -29,7 +28,7 @@ module StatusPage
       class << self
         private
 
-        def configuration_class
+        def config_class
           Configuration
         end
       end
@@ -44,9 +43,9 @@ module StatusPage
       def check_latency!
         latency = ::Sidekiq::Queue.new.latency
 
-        return unless latency > configuration.latency
+        return unless latency > config.latency
 
-        raise "latency #{latency} is greater than #{configuration.latency}"
+        raise "latency #{latency} is greater than #{config.latency}"
       end
 
       def check_redis!

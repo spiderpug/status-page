@@ -10,7 +10,6 @@ Mounting this gem will add a '/status' route to your application, which can be u
 
 <img src="https://cloud.githubusercontent.com/assets/5518/14341727/c12ccdee-fcc6-11e5-8c25-00324d0e9baa.png" />
 
-
 ## Install
 
 ```ruby
@@ -46,7 +45,7 @@ The following services are currently supported:
 By default, only the database check is enabled. You can add more service services by explicitly enabling them via an initializer:
 
 ```ruby
-StatusPage.configure do |self|
+StatusPage.configure do
   # Cache check status result 10 seconds
   self.interval = 10
   # Use service
@@ -72,11 +71,11 @@ class CustomService < StatusPage::Services::Base
   end
 end
 ```
-* Add its class to the configuration:
+* Add its class to the config:
 
 ```ruby
-StatusPage.configure do |config|
-  config.add_custom_service(CustomProvider)
+StatusPage.configure do
+  self.add_custom_service(CustomProvider)
 end
 ```
 
@@ -85,8 +84,8 @@ end
 If you need to perform any additional error handling (for example, for additional error reporting), you can configure a custom error callback:
 
 ```ruby
-StatusPage.configure do |config|
-  config.error_callback = proc do |e|
+StatusPage.configure do
+  self.error_callback = proc do |e|
     logger.error "Health check failed with: #{e.message}"
 
     Raven.capture_exception(e)
@@ -99,8 +98,8 @@ end
 By default, the `/status` endpoint is not authenticated and is available to any user. You can authenticate using HTTP Basic Auth by providing authentication credentials:
 
 ```ruby
-StatusPage.configure do |config|
-  config.basic_auth_credentials = {
+StatusPage.configure do
+  self.basic_auth_credentials = {
     username: 'SECRET_NAME',
     password: 'Shhhhh!!!'
   }

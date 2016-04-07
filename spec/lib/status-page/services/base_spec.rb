@@ -12,7 +12,7 @@ describe StatusPage::Services::Base do
   end
 
   describe '#service_name' do
-    it { expect(described_class.service_name).to eq('base') }
+    it { expect(described_class.service_name).to eq('Base') }
   end
 
   describe '#check!' do
@@ -27,9 +27,9 @@ describe StatusPage::Services::Base do
     it { expect(described_class).not_to be_configurable }
   end
 
-  describe '#configuration_class' do
+  describe '#config_class' do
     it 'abstract' do
-      expect(described_class.send(:configuration_class)).to be_nil
+      expect(described_class.send(:config_class)).to be_nil
     end
   end
 end

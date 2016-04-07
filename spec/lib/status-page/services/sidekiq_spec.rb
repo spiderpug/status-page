@@ -22,7 +22,7 @@ describe StatusPage::Services::Sidekiq do
   end
 
   describe '#service_name' do
-    it { expect(described_class.service_name).to eq('sidekiq') }
+    it { expect(described_class.service_name).to eq('Sidekiq') }
   end
 
   describe '#check!' do
@@ -80,7 +80,7 @@ describe StatusPage::Services::Sidekiq do
         described_class.configure do |config|
           config.latency = latency
         end
-      }.to change { described_class.configuration.latency }.to(latency)
+      }.to change { described_class.config.latency }.to(latency)
     end
   end
 end

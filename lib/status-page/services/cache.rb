@@ -1,5 +1,3 @@
-require 'status-page/services/base'
-
 module StatusPage
   module Services
     class CacheException < StandardError; end

@@ -2,18 +2,18 @@ module StatusPage
   module Services
     class Base
       attr_reader :request
-      cattr_accessor :configuration
+      cattr_accessor :config
 
       def self.service_name
-        @name ||= name.demodulize.downcase
+        @name ||= name.demodulize
       end
 
       def self.configure
         return unless configurable?
 
-        self.configuration ||= configuration_class.new
+        self.config ||= config_class.new
 
-        yield self.configuration if block_given?
+        yield self.config if block_given?
       end
 
       def initialize(request: nil)
@@ -28,11 +28,11 @@ module StatusPage
       end
 
       def self.configurable?
-        configuration_class
+        config_class
       end
 
       # @abstract
-      def self.configuration_class
+      def self.config_class
       end
     end
   end

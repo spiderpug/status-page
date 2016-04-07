@@ -1,4 +1,3 @@
-require 'status-page/services/base'
 require 'resque'
 
 module StatusPage

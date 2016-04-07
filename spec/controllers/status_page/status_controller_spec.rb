@@ -11,8 +11,8 @@ describe StatusPage::StatusController, :type => :controller do
     providers = Set.new
     providers << StatusPage::Services::Database
 
-    allow(StatusPage.configuration).to receive(:providers).and_return(providers)
-    allow(StatusPage.configuration).to receive(:interval).and_return(0)
+    allow(StatusPage.config).to receive(:providers).and_return(providers)
+    allow(StatusPage.config).to receive(:interval).and_return(0)
 
     Timecop.freeze(time)
   end
@@ -45,7 +45,7 @@ describe StatusPage::StatusController, :type => :controller do
         expect(response).to be_ok
         json = JSON.parse(response.body)
         expect(json['results']).to eq([{
-          'name' => 'database',
+          'name' => 'Database',
           'message' => '',
           'status' => 'OK'
         }])
@@ -86,7 +86,7 @@ describe StatusPage::StatusController, :type => :controller do
       expect(json['status']).to eq 'ok'
       expect(json['results'].size).to eq 1
       expect(json['results'][0]).to eq({
-        'name' => 'database',
+        'name' => 'Database',
         'message' => '',
         'status' => 'OK'
       })
@@ -107,7 +107,7 @@ describe StatusPage::StatusController, :type => :controller do
         expect(json['status']).to eq 'service_unavailable'
         expect(json['results'].size).to eq 1
         expect(json['results'][0]).to eq({
-          'name' => 'database',
+          'name' => 'Database',
           'message' => 'Exception',
           'status' => 'ERROR'
         })

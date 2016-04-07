@@ -4,7 +4,7 @@ describe StatusPage::Services::Resque do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#service_name' do
-    it { expect(described_class.service_name).to eq('resque') }
+    it { expect(described_class.service_name).to eq('Resque') }
   end
 
   describe '#check!' do
