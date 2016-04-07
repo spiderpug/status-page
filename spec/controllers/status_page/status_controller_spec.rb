@@ -26,8 +26,9 @@ describe StatusPage::StatusController, :type => :controller do
     let(:password) { 'password' }
 
     before do
-      StatusPage.configure do |config|
-        config.basic_auth_credentials = { username: username, password: password }
+      that = self
+      StatusPage.configure do
+        self.basic_auth_credentials = { username: that.username, password: that.password }
       end
     end
 
@@ -71,8 +72,8 @@ describe StatusPage::StatusController, :type => :controller do
 
   describe 'GET status.json' do
     before do
-      StatusPage.configure do |config|
-        config.basic_auth_credentials = nil
+      StatusPage.configure do
+        self.basic_auth_credentials = nil
       end
     end
 
