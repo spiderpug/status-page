@@ -2,11 +2,12 @@ module StatusPage
   class Configuration
     PROVIDERS = [:cache, :database, :redis, :resque, :sidekiq].freeze
 
-    attr_accessor :error_callback, :basic_auth_credentials
+    attr_accessor :error_callback, :basic_auth_credentials, :interval
     attr_reader :providers
 
     def initialize
       @providers = Set.new
+      @interval = 10
     end
 
     def use(provider_name)

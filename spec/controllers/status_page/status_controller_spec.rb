@@ -10,7 +10,9 @@ describe StatusPage::StatusController, :type => :controller do
   before do
     providers = Set.new
     providers << StatusPage::Services::Database
+
     allow(StatusPage.configuration).to receive(:providers).and_return(providers)
+    allow(StatusPage.configuration).to receive(:interval).and_return(0)
 
     Timecop.freeze(time)
   end
@@ -45,8 +47,7 @@ describe StatusPage::StatusController, :type => :controller do
         expect(json['results']).to eq([{
           'name' => 'database',
           'message' => '',
-          'status' => 'OK',
-          'timestamp' => time.to_s(:db)
+          'status' => 'OK'
         }])
       end
     end
@@ -87,8 +88,7 @@ describe StatusPage::StatusController, :type => :controller do
       expect(json['results'][0]).to eq({
         'name' => 'database',
         'message' => '',
-        'status' => 'OK',
-        'timestamp' => time.to_s(:db)
+        'status' => 'OK'
       })
     end
 
@@ -109,8 +109,7 @@ describe StatusPage::StatusController, :type => :controller do
         expect(json['results'][0]).to eq({
           'name' => 'database',
           'message' => 'Exception',
-          'status' => 'ERROR',
-          'timestamp' => time.to_s(:db)
+          'status' => 'ERROR'
         })
       end
     end

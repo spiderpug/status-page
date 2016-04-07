@@ -6,6 +6,8 @@ describe StatusPage do
   before do
     StatusPage.configuration = StatusPage::Configuration.new
 
+    allow(StatusPage.configuration).to receive(:interval).and_return(0)
+
     Timecop.freeze(time)
   end
 
@@ -79,7 +81,8 @@ describe StatusPage do
       it 'succesfully checks' do
         expect(subject.check(request: request)).to eq(
           :results => [],
-          :status => :ok
+          :status => :ok,
+          :timestamp => time
         )
       end
     end
@@ -98,17 +101,16 @@ describe StatusPage do
             {
               name: 'database',
               message: '',
-              status: 'OK',
-              timestamp: time.to_s(:db)
+              status: 'OK'
             },
             {
               name: 'redis',
               message: '',
-              status: 'OK',
-              timestamp: time.to_s(:db)
+              status: 'OK'
             }
           ],
-          :status => :ok
+          :status => :ok,
+          :timestamp => time
         )
       end
 
@@ -123,17 +125,16 @@ describe StatusPage do
               {
                 name: 'database',
                 message: '',
-                status: 'OK',
-                timestamp: time.to_s(:db)
+                status: 'OK'
               },
               {
                 name: 'redis',
                 message: "different values (now: #{time.to_s(:db)}, fetched: false)",
-                status: 'ERROR',
-                timestamp: time.to_s(:db)
+                status: 'ERROR'
               }
             ],
-            :status => :service_unavailable
+            :status => :service_unavailable,
+            :timestamp => time
           )
         end
       end
@@ -145,17 +146,16 @@ describe StatusPage do
               {
                 name: 'database',
                 message: '',
-                status: 'OK',
-                timestamp: time.to_s(:db)
+                status: 'OK'
               },
               {
                 name: 'redis',
                 message: '',
-                status: 'OK',
-                timestamp: time.to_s(:db)
+                status: 'OK'
               }
             ],
-            :status => :ok
+            :status => :ok,
+            :timestamp => time
           )
         end
       end
@@ -172,17 +172,16 @@ describe StatusPage do
               {
                 name: 'database',
                 message: 'Exception',
-                status: 'ERROR',
-                timestamp: time.to_s(:db)
+                status: 'ERROR'
               },
               {
                 name: 'redis',
                 message: "different values (now: #{time.to_s(:db)}, fetched: false)",
-                status: 'ERROR',
-                timestamp: time.to_s(:db)
+                status: 'ERROR'
               }
             ],
-            :status => :service_unavailable
+            :status => :service_unavailable,
+            :timestamp => time
           )
         end
       end
@@ -216,11 +215,11 @@ describe StatusPage do
             {
               name: 'database',
               message: 'Exception',
-              status: 'ERROR',
-              timestamp: time.to_s(:db)
+              status: 'ERROR'
             }
           ],
-          :status => :service_unavailable
+          :status => :service_unavailable,
+          :timestamp => time
         )
 
         expect(test).to be_truthy

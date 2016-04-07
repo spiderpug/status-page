@@ -1,4 +1,4 @@
 pkg
 tmp
 coverage
-spec/dummy/log
+spec/dummy/log/*.log

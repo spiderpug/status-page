@@ -17,13 +17,21 @@ module StatusPage
   end
 
   def check(request: nil)
+    if configuration.interval > 0
+      if @cached_status && @cached_status[:timestamp] >= (configuration.interval || 5).seconds.ago
+        return @cached_status
+      end
+    end
+
     providers = configuration.providers || []
     results = providers.map { |provider| provider_result(provider, request) }
 
-    {
+    @cached_status = {
       results: results,
-      status: results.all? { |result| result[:status] == STATUSES[:ok] } ? :ok : :service_unavailable
+      status: results.all? { |result| result[:status] == STATUSES[:ok] } ? :ok : :service_unavailable,
+      timestamp: Time.now
     }
+    @cached_status
   end
 
   private
@@ -35,8 +43,7 @@ module StatusPage
     {
       name: provider.provider_name,
       message: '',
-      status: STATUSES[:ok],
-      timestamp: Time.now.to_s(:db)
+      status: STATUSES[:ok]
     }
   rescue => e
     configuration.error_callback.call(e) if configuration.error_callback
@@ -44,8 +51,7 @@ module StatusPage
     {
       name: provider.provider_name,
       message: e.message,
-      status: STATUSES[:error],
-      timestamp: Time.now.to_s(:db)
+      status: STATUSES[:error]
     }
   end
 end
