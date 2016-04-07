@@ -1,8 +1,8 @@
-require 'status-page/providers/base'
+require 'status-page/services/base'
 require 'resque'
 
 module StatusPage
-  module Providers
+  module Services
     class ResqueException < StandardError; end
 
     class Resque < Base

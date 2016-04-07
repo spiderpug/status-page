@@ -1,8 +1,8 @@
-require 'status-page/providers/base'
+require 'status-page/services/base'
 require 'sidekiq/api'
 
 module StatusPage
-  module Providers
+  module Services
     class SidekiqException < StandardError; end
 
     class Sidekiq < Base

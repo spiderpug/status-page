@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe StatusPage::Providers::Sidekiq do
-  describe StatusPage::Providers::Sidekiq::Configuration do
+describe StatusPage::Services::Sidekiq do
+  describe StatusPage::Services::Sidekiq::Configuration do
     describe 'defaults' do
-      it { expect(described_class.new.latency).to eq(StatusPage::Providers::Sidekiq::Configuration::DEFAULT_LATENCY_TIMEOUT) }
+      it { expect(described_class.new.latency).to eq(StatusPage::Services::Sidekiq::Configuration::DEFAULT_LATENCY_TIMEOUT) }
     end
   end
 
@@ -27,7 +27,7 @@ describe StatusPage::Providers::Sidekiq do
 
   describe '#check!' do
     it 'succesfully checks' do
-      Providers.stub_sidekiq_progresses_online
+      Services.stub_sidekiq_progresses_online
       expect {
         subject.check!
       }.not_to raise_error
@@ -38,31 +38,31 @@ describe StatusPage::Providers::Sidekiq do
         it 'fails check!' do
           expect {
             subject.check!
-          }.to raise_error(StatusPage::Providers::SidekiqException)
+          }.to raise_error(StatusPage::Services::SidekiqException)
         end
       end
 
       context 'latency' do
         before do
-          Providers.stub_sidekiq_latency_failure
+          Services.stub_sidekiq_latency_failure
         end
 
         it 'fails check!' do
           expect {
             subject.check!
-          }.to raise_error(StatusPage::Providers::SidekiqException)
+          }.to raise_error(StatusPage::Services::SidekiqException)
         end
       end
 
       context 'redis' do
         before do
-          Providers.stub_sidekiq_redis_failure
+          Services.stub_sidekiq_redis_failure
         end
 
         it 'fails check!' do
           expect {
             subject.check!
-          }.to raise_error(StatusPage::Providers::SidekiqException)
+          }.to raise_error(StatusPage::Services::SidekiqException)
         end
       end
     end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe StatusPage::Configuration do
   describe 'defaults' do
-    it { expect(subject.providers).to eq(Set.new([StatusPage::Providers::Database])) }
+    it { expect(subject.providers).to eq(Set.new([])) }
     it { expect(subject.error_callback).to be_nil }
     it { expect(subject.basic_auth_credentials).to be_nil }
   end
@@ -12,7 +12,7 @@ describe StatusPage::Configuration do
       before do
         subject.instance_variable_set('@providers', Set.new)
 
-        stub_const("StatusPage::Providers::#{provider_name.capitalize}", Class.new)
+        stub_const("StatusPage::Services::#{provider_name.capitalize}", Class.new)
       end
 
       it "responds to #{provider_name}" do
@@ -22,11 +22,11 @@ describe StatusPage::Configuration do
       it "configures #{provider_name}" do
         expect {
           subject.send(provider_name)
-        }.to change { subject.providers }.to(Set.new(["StatusPage::Providers::#{provider_name.capitalize}".constantize]))
+        }.to change { subject.providers }.to(Set.new(["StatusPage::Services::#{provider_name.capitalize}".constantize]))
       end
 
       it "returns #{provider_name}'s class" do
-        expect(subject.send(provider_name)).to eq("StatusPage::Providers::#{provider_name.capitalize}".constantize)
+        expect(subject.send(provider_name)).to eq("StatusPage::Services::#{provider_name.capitalize}".constantize)
       end
     end
   end
@@ -37,7 +37,7 @@ describe StatusPage::Configuration do
     end
 
     context 'inherits' do
-      class CustomProvider < StatusPage::Providers::Base
+      class CustomProvider < StatusPage::Services::Base
       end
 
       it 'accepts' do

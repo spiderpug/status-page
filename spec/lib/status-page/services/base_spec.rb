@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StatusPage::Providers::Base do
+describe StatusPage::Services::Base do
   let(:request) { ActionController::TestRequest.create }
 
   subject { described_class.new(request: request) }

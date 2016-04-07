@@ -1,5 +1,5 @@
 module StatusPage
-  module Providers
+  module Services
     class Base
       attr_reader :request
       cattr_accessor :configuration

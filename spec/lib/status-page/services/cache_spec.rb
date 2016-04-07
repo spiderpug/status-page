@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StatusPage::Providers::Cache do
+describe StatusPage::Services::Cache do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#provider_name' do
@@ -16,13 +16,13 @@ describe StatusPage::Providers::Cache do
 
     context 'failing' do
       before do
-        Providers.stub_cache_failure
+        Services.stub_cache_failure
       end
 
       it 'fails check!' do
         expect {
           subject.check!
-        }.to raise_error(StatusPage::Providers::CacheException)
+        }.to raise_error(StatusPage::Services::CacheException)
       end
     end
   end

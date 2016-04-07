@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Providers
+module Services
   include RSpec::Mocks::ExampleMethods
 
   extend self

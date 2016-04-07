@@ -19,27 +19,30 @@ describe StatusPage do
     describe 'providers' do
       it 'configures a single provider' do
         expect {
-          subject.configure(&:redis)
+          subject.configure do |config|
+            config.use :redis
+          end
         }.to change { StatusPage.configuration.providers }
-          .to(Set.new([StatusPage::Providers::Database, StatusPage::Providers::Redis]))
+          .to(Set.new([StatusPage::Services::Redis]))
       end
 
       it 'configures a multiple providers' do
         expect {
           subject.configure do |config|
-            config.redis
-            config.sidekiq
+            config.use :redis
+            config.use :sidekiq
           end
         }.to change { StatusPage.configuration.providers }
-          .to(Set.new([StatusPage::Providers::Database, StatusPage::Providers::Redis,
-            StatusPage::Providers::Sidekiq]))
+          .to(Set.new([StatusPage::Services::Redis, StatusPage::Services::Sidekiq]))
       end
 
       it 'appends new providers' do
         expect {
-          subject.configure(&:resque)
+          subject.configure do |config|
+            config.use :resque
+          end
         }.to change { StatusPage.configuration.providers }.to(
-          Set.new([StatusPage::Providers::Database, StatusPage::Providers::Resque]))
+          Set.new([StatusPage::Services::Resque]))
       end
     end
 
@@ -75,13 +78,7 @@ describe StatusPage do
     context 'default providers' do
       it 'succesfully checks' do
         expect(subject.check(request: request)).to eq(
-          :results => [
-            'database' => {
-              message: '',
-              status: 'OK',
-              timestamp: time.to_s(:db)
-            }
-          ],
+          :results => [],
           :status => :ok
         )
       end
@@ -90,8 +87,8 @@ describe StatusPage do
     context 'db and redis providers' do
       before do
         subject.configure do |config|
-          config.database
-          config.redis
+          config.use :database
+          config.use :redis
         end
       end
 
@@ -99,18 +96,16 @@ describe StatusPage do
         expect(subject.check(request: request)).to eq(
           :results => [
             {
-              'database' => {
-                message: '',
-                status: 'OK',
-                timestamp: time.to_s(:db)
-              }
+              name: 'database',
+              message: '',
+              status: 'OK',
+              timestamp: time.to_s(:db)
             },
             {
-              'redis' => {
-                message: '',
-                status: 'OK',
-                timestamp: time.to_s(:db)
-              }
+              name: 'redis',
+              message: '',
+              status: 'OK',
+              timestamp: time.to_s(:db)
             }
           ],
           :status => :ok
@@ -119,25 +114,23 @@ describe StatusPage do
 
       context 'redis fails' do
         before do
-          Providers.stub_redis_failure
+          Services.stub_redis_failure
         end
 
         it 'fails check' do
           expect(subject.check(request: request)).to eq(
             :results => [
               {
-                'database' => {
-                  message: '',
-                  status: 'OK',
-                  timestamp: time.to_s(:db)
-                }
+                name: 'database',
+                message: '',
+                status: 'OK',
+                timestamp: time.to_s(:db)
               },
               {
-                'redis' => {
-                  message: "different values (now: #{time.to_s(:db)}, fetched: false)",
-                  status: 'ERROR',
-                  timestamp: time.to_s(:db)
-                }
+                name: 'redis',
+                message: "different values (now: #{time.to_s(:db)}, fetched: false)",
+                status: 'ERROR',
+                timestamp: time.to_s(:db)
               }
             ],
             :status => :service_unavailable
@@ -150,18 +143,16 @@ describe StatusPage do
           expect(subject.check(request: request)).to eq(
             :results => [
               {
-                'database' => {
-                  message: '',
-                  status: 'OK',
-                  timestamp: time.to_s(:db)
-                }
+                name: 'database',
+                message: '',
+                status: 'OK',
+                timestamp: time.to_s(:db)
               },
               {
-                'redis' => {
-                  message: '',
-                  status: 'OK',
-                  timestamp: time.to_s(:db)
-                }
+                name: 'redis',
+                message: '',
+                status: 'OK',
+                timestamp: time.to_s(:db)
               }
             ],
             :status => :ok
@@ -171,26 +162,24 @@ describe StatusPage do
 
       context 'both redis and db fail' do
         before do
-          Providers.stub_database_failure
-          Providers.stub_redis_failure
+          Services.stub_database_failure
+          Services.stub_redis_failure
         end
 
         it 'fails check' do
           expect(subject.check(request: request)).to eq(
             :results => [
               {
-                'database' => {
-                  message: 'Exception',
-                  status: 'ERROR',
-                  timestamp: time.to_s(:db)
-                }
+                name: 'database',
+                message: 'Exception',
+                status: 'ERROR',
+                timestamp: time.to_s(:db)
               },
               {
-                'redis' => {
-                  message: "different values (now: #{time.to_s(:db)}, fetched: false)",
-                  status: 'ERROR',
-                  timestamp: time.to_s(:db)
-                }
+                name: 'redis',
+                message: "different values (now: #{time.to_s(:db)}, fetched: false)",
+                status: 'ERROR',
+                timestamp: time.to_s(:db)
               }
             ],
             :status => :service_unavailable
@@ -213,23 +202,22 @@ describe StatusPage do
 
       before do
         subject.configure do |config|
-          config.database
+          config.use :database
 
           config.error_callback = callback
         end
 
-        Providers.stub_database_failure
+        Services.stub_database_failure
       end
 
       it 'calls error_callback' do
         expect(subject.check(request: request)).to eq(
           :results => [
             {
-              'database' => {
-                message: 'Exception',
-                status: 'ERROR',
-                timestamp: time.to_s(:db)
-              }
+              name: 'database',
+              message: 'Exception',
+              status: 'ERROR',
+              timestamp: time.to_s(:db)
             }
           ],
           :status => :service_unavailable

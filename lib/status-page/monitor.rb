@@ -17,11 +17,12 @@ module StatusPage
   end
 
   def check(request: nil)
-    results = configuration.providers.map { |provider| provider_result(provider, request) }
+    providers = configuration.providers || []
+    results = providers.map { |provider| provider_result(provider, request) }
 
     {
       results: results,
-      status: results.all? { |res| res.values.first[:status] == STATUSES[:ok] } ? :ok : :service_unavailable
+      status: results.all? { |result| result[:status] == STATUSES[:ok] } ? :ok : :service_unavailable
     }
   end
 
@@ -32,21 +33,19 @@ module StatusPage
     monitor.check!
 
     {
-      provider.provider_name => {
-        message: '',
-        status: STATUSES[:ok],
-        timestamp: Time.now.to_s(:db)
-      }
+      name: provider.provider_name,
+      message: '',
+      status: STATUSES[:ok],
+      timestamp: Time.now.to_s(:db)
     }
   rescue => e
     configuration.error_callback.call(e) if configuration.error_callback
 
     {
-      provider.provider_name => {
-        message: e.message,
-        status: STATUSES[:error],
-        timestamp: Time.now.to_s(:db)
-      }
+      name: provider.provider_name,
+      message: e.message,
+      status: STATUSES[:error],
+      timestamp: Time.now.to_s(:db)
     }
   end
 end

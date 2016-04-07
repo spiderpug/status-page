@@ -1,7 +1,7 @@
-require 'status-page/providers/base'
+require 'status-page/services/base'
 
 module StatusPage
-  module Providers
+  module Services
     class DatabaseException < StandardError; end
 
     class Database < Base

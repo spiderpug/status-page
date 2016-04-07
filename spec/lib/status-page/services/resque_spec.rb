@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe StatusPage::Providers::Redis do
+describe StatusPage::Services::Resque do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#provider_name' do
-    it { expect(described_class.provider_name).to eq('redis') }
+    it { expect(described_class.provider_name).to eq('resque') }
   end
 
   describe '#check!' do
@@ -16,22 +16,18 @@ describe StatusPage::Providers::Redis do
 
     context 'failing' do
       before do
-        Providers.stub_redis_failure
+        Services.stub_resque_failure
       end
 
       it 'fails check!' do
         expect {
           subject.check!
-        }.to raise_error(StatusPage::Providers::RedisException)
+        }.to raise_error(StatusPage::Services::ResqueException)
       end
     end
   end
 
   describe '#configurable?' do
     it { expect(described_class).not_to be_configurable }
-  end
-
-  describe '#key' do
-    it { expect(subject.send(:key)).to eq('status-redis:0.0.0.0') }
   end
 end

@@ -1,8 +1,8 @@
-require 'status-page/providers/base'
+require 'status-page/services/base'
 require 'redis/namespace'
 
 module StatusPage
-  module Providers
+  module Services
     class RedisException < StandardError; end
 
     class Redis < Base

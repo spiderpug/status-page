@@ -1,25 +1,27 @@
 module StatusPage
   class StatusController < ActionController::Base
-    if Rails.version.starts_with? '3'
-      before_filter :authenticate_with_basic_auth
-    else
-      before_action :authenticate_with_basic_auth
-    end
+    before_action :authenticate_with_basic_auth
 
-    # GET /status/check
-    def check
-      res = StatusPage.check(request: request)
+    def index
+      @statuses = statuses
 
-      unless StatusPage.configuration.environmet_variables.nil?
-        env_vars = [environmet_variables: StatusPage.configuration.environmet_variables]
-        res[:results] = env_vars + res[:results]
+      respond_to do |format|
+        format.html
+        format.json {
+          render json: statuses
+        }
+        format.xml {
+          render xml: statuses
+        }
       end
-
-      self.content_type = Mime[:json]
-      self.response_body = ActiveSupport::JSON.encode(res[:results])
     end
 
     private
+
+    def statuses
+      return @statuses if defined? @statuses
+      @statuses = StatusPage.check(request: request)
+    end
 
     def authenticate_with_basic_auth
       return true unless StatusPage.configuration.basic_auth_credentials

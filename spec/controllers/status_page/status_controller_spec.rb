@@ -8,6 +8,10 @@ describe StatusPage::StatusController, :type => :controller do
   let(:time) { Time.local(1990) }
 
   before do
+    providers = Set.new
+    providers << StatusPage::Services::Database
+    allow(StatusPage.configuration).to receive(:providers).and_return(providers)
+
     Timecop.freeze(time)
   end
 
@@ -22,7 +26,6 @@ describe StatusPage::StatusController, :type => :controller do
     before do
       StatusPage.configure do |config|
         config.basic_auth_credentials = { username: username, password: password }
-        config.environmet_variables = nil
       end
     end
 
@@ -34,16 +37,16 @@ describe StatusPage::StatusController, :type => :controller do
 
       it 'succesfully checks' do
         expect {
-          get :check
+          get :index, format: 'json'
         }.not_to raise_error
 
         expect(response).to be_ok
-        expect(JSON.parse(response.body)).to eq([{
-          'database' => {
-            'message' => '',
-            'status' => 'OK',
-            'timestamp' => time.to_s(:db)
-          }
+        json = JSON.parse(response.body)
+        expect(json['results']).to eq([{
+          'name' => 'database',
+          'message' => '',
+          'status' => 'OK',
+          'timestamp' => time.to_s(:db)
         }])
       end
     end
@@ -56,7 +59,7 @@ describe StatusPage::StatusController, :type => :controller do
 
       it 'fails' do
         expect {
-          get :check
+          get :index, format: 'json'
         }.not_to raise_error
 
         expect(response).not_to be_ok
@@ -65,85 +68,50 @@ describe StatusPage::StatusController, :type => :controller do
     end
   end
 
-  describe 'environmet variables' do
-    let(:environmet_variables) { { build_number: '12', git_sha: 'example_sha' } }
-
+  describe 'GET status.json' do
     before do
       StatusPage.configure do |config|
         config.basic_auth_credentials = nil
-        config.environmet_variables = environmet_variables
-      end
-    end
-
-    context 'valid environmet variables synatx provided' do
-      it 'succesfully checks' do
-        expect {
-          get :check
-        }.not_to raise_error
-
-        expect(response).to be_ok
-        expect(JSON.parse(response.body)).to eq(
-          [
-            {
-              'environmet_variables' => {
-                'build_number' => '12',
-                'git_sha' => 'example_sha'
-              }
-            },
-            {
-              'database' => {
-                'message' => '',
-                'status' => 'OK',
-                'timestamp' => time.to_s(:db)
-              }
-            }
-          ]
-        )
-      end
-    end
-  end
-
-  describe '#check' do
-    before do
-      StatusPage.configure do |config|
-        config.basic_auth_credentials = nil
-        config.environmet_variables = nil
       end
     end
 
     it 'succesfully checks' do
       expect {
-        get :check
+        get :index, format: 'json'
       }.not_to raise_error
 
       expect(response).to be_ok
-      expect(JSON.parse(response.body)).to eq([{
-        'database' => {
-          'message' => '',
-          'status' => 'OK',
-          'timestamp' => time.to_s(:db)
-        }
-      }])
+      json = JSON.parse(response.body)
+      expect(json['status']).to eq 'ok'
+      expect(json['results'].size).to eq 1
+      expect(json['results'][0]).to eq({
+        'name' => 'database',
+        'message' => '',
+        'status' => 'OK',
+        'timestamp' => time.to_s(:db)
+      })
     end
 
     context 'failing' do
       before do
-        Providers.stub_database_failure
+        Services.stub_database_failure
       end
 
       it 'should fail' do
         expect {
-          get :check
+          get :index, format: 'json'
         }.not_to raise_error
 
         expect(response).to be_success
-        expect(JSON.parse(response.body)).to eq([{
-          'database' => {
-            'message' => 'Exception',
-            'status' => 'ERROR',
-            'timestamp' => time.to_s(:db)
-          }
-        }])
+        json = JSON.parse(response.body)
+        expect(json['status']).to eq 'service_unavailable'
+        expect(json['results'].size).to eq 1
+        expect(json['results'][0]).to eq({
+          'name' => 'database',
+          'message' => 'Exception',
+          'status' => 'ERROR',
+          'timestamp' => time.to_s(:db)
+        })
       end
     end
   end

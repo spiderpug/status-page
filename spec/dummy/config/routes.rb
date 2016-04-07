@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  mount StatusPage::Engine => '/health'
+  mount StatusPage::Engine => '/'
 end
