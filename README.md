@@ -6,6 +6,10 @@ Mountable status page for your Rails application, to check (DB, Cache, Sidekiq, 
 
 Mounting this gem will add a '/status' route to your application, which can be used for health monitoring the application and its various services. The method will return an appropriate HTTP status as well as a JSON array representing the state of each service.
 
+## Example
+
+<img src="//cloud.githubusercontent.com/assets/5518/14341727/c12ccdee-fcc6-11e5-8c25-00324d0e9baa.png" width="640" />
+
 ## Install
 
 ```ruby
