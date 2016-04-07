@@ -3,8 +3,8 @@ require 'spec_helper'
 describe StatusPage::Services::Resque do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
-  describe '#provider_name' do
-    it { expect(described_class.provider_name).to eq('resque') }
+  describe '#service_name' do
+    it { expect(described_class.service_name).to eq('resque') }
   end
 
   describe '#check!' do

@@ -8,30 +8,30 @@ describe StatusPage::Configuration do
   end
 
   describe 'providers' do
-    StatusPage::Configuration::PROVIDERS.each do |provider_name|
+    StatusPage::Configuration::PROVIDERS.each do |service_name|
       before do
         subject.instance_variable_set('@providers', Set.new)
 
-        stub_const("StatusPage::Services::#{provider_name.capitalize}", Class.new)
+        stub_const("StatusPage::Services::#{service_name.capitalize}", Class.new)
       end
 
-      it "responds to #{provider_name}" do
-        expect(subject).to respond_to(provider_name)
+      it "responds to #{service_name}" do
+        expect(subject).to respond_to(service_name)
       end
 
-      it "configures #{provider_name}" do
+      it "configures #{service_name}" do
         expect {
-          subject.send(provider_name)
-        }.to change { subject.providers }.to(Set.new(["StatusPage::Services::#{provider_name.capitalize}".constantize]))
+          subject.send(service_name)
+        }.to change { subject.providers }.to(Set.new(["StatusPage::Services::#{service_name.capitalize}".constantize]))
       end
 
-      it "returns #{provider_name}'s class" do
-        expect(subject.send(provider_name)).to eq("StatusPage::Services::#{provider_name.capitalize}".constantize)
+      it "returns #{service_name}'s class" do
+        expect(subject.send(service_name)).to eq("StatusPage::Services::#{service_name.capitalize}".constantize)
       end
     end
   end
 
-  describe '#add_custom_provider' do
+  describe '#add_custom_service' do
     before do
       subject.instance_variable_set('@providers', Set.new)
     end
@@ -42,12 +42,12 @@ describe StatusPage::Configuration do
 
       it 'accepts' do
         expect {
-          subject.add_custom_provider(CustomProvider)
+          subject.add_custom_service(CustomProvider)
         }.to change { subject.providers }.to(Set.new([CustomProvider]))
       end
 
       it 'returns CustomProvider class' do
-        expect(subject.add_custom_provider(CustomProvider)).to eq(CustomProvider)
+        expect(subject.add_custom_service(CustomProvider)).to eq(CustomProvider)
       end
     end
 
@@ -57,7 +57,7 @@ describe StatusPage::Configuration do
 
       it 'does not accept' do
         expect {
-          subject.add_custom_provider(TestClass)
+          subject.add_custom_service(TestClass)
         }.to raise_error(ArgumentError)
       end
     end

@@ -4,7 +4,7 @@ module StatusPage
       attr_reader :request
       cattr_accessor :configuration
 
-      def self.provider_name
+      def self.service_name
         @name ||= name.demodulize.downcase
       end
 

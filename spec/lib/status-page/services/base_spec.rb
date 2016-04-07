@@ -11,8 +11,8 @@ describe StatusPage::Services::Base do
     end
   end
 
-  describe '#provider_name' do
-    it { expect(described_class.provider_name).to eq('base') }
+  describe '#service_name' do
+    it { expect(described_class.service_name).to eq('base') }
   end
 
   describe '#check!' do

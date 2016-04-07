@@ -33,7 +33,7 @@
 
   .container {
     width: 960px;
-    margin: 0 auto 40px;
+    margin:40px auto;
     overflow: hidden;
   }
 
@@ -42,9 +42,10 @@
     width: 100%;
     border-radius: 5px;
   }
+  .statuses h1 { border-radius: 5px 5px 0 0; background: #f9f9f9; padding: 10px; border-bottom: 1px solid #eee;}
   .statuses .status { font-size: 14px; border-bottom: 1px solid #eee; padding: 15px; }
   .statuses .status:last-child { border-bottom: 0px; }
-  .statuses .name { font-size: 20px; margin-right: 20px; min-width: 100px; font-weight: bold; color: #333; }
+  .statuses .name { font-size: 20px; margin-right: 20px; min-width: 100px; font-weight: bold; color: #555; }
   .statuses .state { font-size: 14px; float: right; width: 80px; color: #45b81d; }
   .statuses .message { color: #666; }
   .statuses .timestamp { width: 130px; color: #999; }
@@ -54,8 +55,8 @@
 
 <body>
   <div class="container">
-    <h1>Status Page</h1>
     <div class="statuses">
+      <h1>Status Page</h1>
       <% @statuses[:results].each do |status| %>
       <div class="status status-<%= status[:status].downcase %>">
         <div class="status-heading">

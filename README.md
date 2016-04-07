@@ -4,7 +4,7 @@
 
 Mountable status page for your Rails application, to check (DB, Cache, Sidekiq, Redis, etc.).
 
-Mounting this gem will add a '/status' route to your application, which can be used for health monitoring the application and its various services. The method will return an appropriate HTTP status as well as a JSON array representing the state of each provider.
+Mounting this gem will add a '/status' route to your application, which can be used for health monitoring the application and its various services. The method will return an appropriate HTTP status as well as a JSON array representing the state of each service.
 
 ## Install
 
@@ -24,7 +24,7 @@ $ bundle install
 mount StatusPage::Engine, at: '/'
 ```
 
-## Supported service providers
+## Supported service services
 
 The following services are currently supported:
 
@@ -36,12 +36,15 @@ The following services are currently supported:
 
 ## Configuration
 
-### Adding providers
+### Adding services
 
-By default, only the database check is enabled. You can add more service providers by explicitly enabling them via an initializer:
+By default, only the database check is enabled. You can add more service services by explicitly enabling them via an initializer:
 
 ```ruby
 StatusPage.configure do |self|
+  # Cache check status result 10 seconds
+  self.interval = 10
+  # Use service
   self.use :database
   self.use :cache
   self.use :redis
@@ -49,16 +52,16 @@ StatusPage.configure do |self|
 end
 ```
 
-### Adding a custom provider
+### Adding a custom service
 
-It's also possible to add custom health check providers suited for your needs (of course, it's highly appreciated and encouraged if you'd contribute useful providers to the project).
+It's also possible to add custom health check services suited for your needs (of course, it's highly appreciated and encouraged if you'd contribute useful services to the project).
 
-In order to add a custom provider, you'd need to:
+In order to add a custom service, you'd need to:
 
 * Implement the `StatusPage::Services::Base` class and its `check!` method (a check is considered as failed if it raises an exception):
 
 ```ruby
-class CustomProvider < StatusPage::Services::Base
+class CustomService < StatusPage::Services::Base
   def check!
     raise 'Oh oh!'
   end
@@ -68,7 +71,7 @@ end
 
 ```ruby
 StatusPage.configure do |config|
-  config.add_custom_provider(CustomProvider)
+  config.add_custom_service(CustomProvider)
 end
 ```
 

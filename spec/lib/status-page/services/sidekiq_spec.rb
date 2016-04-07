@@ -21,8 +21,8 @@ describe StatusPage::Services::Sidekiq do
     end
   end
 
-  describe '#provider_name' do
-    it { expect(described_class.provider_name).to eq('sidekiq') }
+  describe '#service_name' do
+    it { expect(described_class.service_name).to eq('sidekiq') }
   end
 
   describe '#check!' do

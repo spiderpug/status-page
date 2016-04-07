@@ -41,7 +41,7 @@ module StatusPage
     monitor.check!
 
     {
-      name: provider.provider_name,
+      name: provider.service_name,
       message: '',
       status: STATUSES[:ok]
     }
@@ -49,7 +49,7 @@ module StatusPage
     configuration.error_callback.call(e) if configuration.error_callback
 
     {
-      name: provider.provider_name,
+      name: provider.service_name,
       message: e.message,
       status: STATUSES[:error]
     }
