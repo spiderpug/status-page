@@ -1,3 +1,8 @@
+0.1.3
+-----
+
+- Fix Redis service connection, use `Redis.current`.
+
 0.1.2
 -----
 

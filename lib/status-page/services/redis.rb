@@ -8,7 +8,7 @@ module StatusPage
       def check!
         time = Time.now.to_s(:db)
 
-        redis = ::Redis.new
+        redis = ::Redis.current
         redis.set(key, time)
         fetched = redis.get(key)
 
