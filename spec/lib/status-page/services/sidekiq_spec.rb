@@ -3,7 +3,7 @@ require 'spec_helper'
 describe StatusPage::Services::Sidekiq do
   describe StatusPage::Services::Sidekiq::Configuration do
     describe 'defaults' do
-      it { expect(described_class.new.latency).to eq(StatusPage::Services::Sidekiq::Configuration::DEFAULT_LATENCY_TIMEOUT) }
+      it { expect(described_class.new.latency).to eq(30) }
     end
   end
 
@@ -77,9 +77,7 @@ describe StatusPage::Services::Sidekiq do
       latency = 123
 
       expect {
-        described_class.configure do |config|
-          config.latency = latency
-        end
+        described_class.config.latency = latency
       }.to change { described_class.config.latency }.to(latency)
     end
   end

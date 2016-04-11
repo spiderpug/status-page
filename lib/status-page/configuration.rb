@@ -8,9 +8,15 @@ module StatusPage
       @interval = 10
     end
 
-    def use(service_name)
+    def use(service_name, opts = {})
       require "status-page/services/#{service_name}"
-      add_service("StatusPage::Services::#{service_name.capitalize}".constantize)
+      klass = "StatusPage::Services::#{service_name.capitalize}".constantize
+      if klass.respond_to?(:configurable?) && klass.configurable?
+        opts.each_key do |key|
+          klass.config.send("#{key}=", opts[key])
+        end
+      end
+      add_service(klass)
     end
 
     def add_custom_service(custom_service_class)

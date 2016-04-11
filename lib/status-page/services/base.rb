@@ -2,29 +2,27 @@ module StatusPage
   module Services
     class Base
       attr_reader :request
-      cattr_accessor :config
+
+      def initialize(request: nil)
+        @request = request
+      end
 
       def self.service_name
         @name ||= name.demodulize
       end
 
-      def self.configure
-        return unless configurable?
-
-        self.config ||= config_class.new
-
-        yield self.config if block_given?
-      end
-
-      def initialize(request: nil)
-        @request = request
-
-        self.class.configure
-      end
-
       # @abstract
       def check!
         raise NotImplementedError
+      end
+
+      def self.config
+        return nil if !self.configurable?
+        @config ||= config_class.new
+      end
+
+      def config
+        self.class.config
       end
 
       def self.configurable?

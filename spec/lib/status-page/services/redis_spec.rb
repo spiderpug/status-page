@@ -28,7 +28,7 @@ describe StatusPage::Services::Redis do
   end
 
   describe '#configurable?' do
-    it { expect(described_class).not_to be_configurable }
+    it { expect(described_class).to be_configurable }
   end
 
   describe '#key' do

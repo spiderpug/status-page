@@ -52,6 +52,8 @@ StatusPage.configure do
   self.use :database
   self.use :cache
   self.use :redis
+  # Custom redis url
+  self.use :redis, url: 'redis://you-redis-host:3306/1'
   self.use :sidekiq
 end
 ```

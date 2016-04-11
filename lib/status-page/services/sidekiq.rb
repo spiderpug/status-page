@@ -29,7 +29,7 @@ module StatusPage
         private
 
         def config_class
-          Configuration
+          Sidekiq::Configuration
         end
       end
 
@@ -44,7 +44,6 @@ module StatusPage
         latency = ::Sidekiq::Queue.new.latency
 
         return unless latency > config.latency
-
         raise "latency #{latency} is greater than #{config.latency}"
       end
 

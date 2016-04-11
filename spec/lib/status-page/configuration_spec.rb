@@ -27,6 +27,13 @@ describe StatusPage::Configuration do
     end
   end
 
+  describe 'use with opts' do
+    it 'should use redis with opts' do
+      subject.use(:redis, url: 'redis://asdgas:3380')
+      expect(StatusPage::Services::Redis.config.url).to eq 'redis://asdgas:3380'
+    end
+  end
+
   describe '#add_custom_service' do
     before do
       subject.instance_variable_set('@providers', Set.new)
