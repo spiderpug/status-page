@@ -36,14 +36,15 @@ module StatusPage
     private
 
     def provider_result(provider, request)
-      monitor = provider.new(request: request)
-      message = monitor.check!
+      provider.set_request(request)
+      message = provider.check!
 
-      {
+      data = {
         name: provider.service_name,
         message: message,
-        status: STATUSES[:ok]
+        status: STATUSES[:ok],
       }
+      data
     rescue => e
       config.error_callback.call(e) if config.error_callback
 

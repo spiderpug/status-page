@@ -26,8 +26,6 @@ module StatusPage
       private
 
       class << self
-        private
-
         def config_class
           Sidekiq::Configuration
         end

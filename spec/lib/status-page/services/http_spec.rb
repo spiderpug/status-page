@@ -4,7 +4,7 @@ describe StatusPage::Services::Http do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#service_name' do
-    it { expect(described_class.service_name).to eq('Http') }
+    it { expect(subject.service_name).to eq('Http') }
   end
 
   before do
@@ -75,6 +75,8 @@ describe StatusPage::Services::Http do
     let(:response) do
       r = double
       allow(r).to receive(:time).and_return(0.44)
+      allow(r).to receive(:connect_time).and_return(0.44)
+      allow(r).to receive(:starttransfer_time).and_return(0.44)
       r
     end
 

@@ -2,13 +2,19 @@ module StatusPage
   module Services
     class Base
       attr_reader :request
+      attr_reader :config
 
       def initialize(request: nil)
+        @config = nil
         @request = request
       end
 
-      def self.service_name
-        @name ||= name.demodulize
+      def set_request(request)
+        @request = request
+      end
+
+      def service_name
+        @title || self.class.name.demodulize
       end
 
       # @abstract
@@ -16,13 +22,9 @@ module StatusPage
         raise NotImplementedError
       end
 
-      def self.config
-        return nil if !self.configurable?
-        @config ||= config_class.new
-      end
-
       def config
-        self.class.config
+        return nil if !self.class.configurable?
+        @config ||= self.class.config_class.new
       end
 
       def self.configurable?

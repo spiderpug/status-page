@@ -4,7 +4,7 @@ describe StatusPage::Services::Delayedjob do
   subject { described_class.new(request: ActionController::TestRequest.create) }
 
   describe '#service_name' do
-    it { expect(described_class.service_name).to eq('Delayedjob') }
+    it { expect(subject.service_name).to eq('Delayedjob') }
   end
 
   before do

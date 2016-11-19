@@ -8,8 +8,8 @@ describe StatusPage::StatusController, :type => :controller do
   let(:time) { Time.local(1990) }
 
   before do
-    providers = Set.new
-    providers << StatusPage::Services::Database
+    providers = []
+    providers << StatusPage::Services::Database.new
 
     allow(StatusPage.config).to receive(:providers).and_return(providers)
     allow(StatusPage.config).to receive(:interval).and_return(0)

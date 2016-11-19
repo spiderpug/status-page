@@ -4,19 +4,14 @@ module StatusPage
     attr_reader :providers
 
     def initialize
-      @providers = Set.new
+      @providers = []
       @interval = 10
     end
 
     def use(service_name, opts = {})
       require "status-page/services/#{service_name}"
       klass = "StatusPage::Services::#{service_name.capitalize}".constantize
-      if klass.respond_to?(:configurable?) && klass.configurable?
-        opts.each_key do |key|
-          klass.config.send("#{key}=", opts[key])
-        end
-      end
-      add_service(klass)
+      add_service(klass, opts)
     end
 
     def add_custom_service(custom_service_class, opts = {})
@@ -24,22 +19,21 @@ module StatusPage
         raise ArgumentError.new 'custom provider class must implement '\
           'StatusPage::Services::Base'
       end
-
-      if custom_service_class.respond_to?(:configurable?) && custom_service_class.configurable?
-        opts.each_key do |key|
-          custom_service_class.config.send("#{key}=", opts[key])
-        end
-      end
-
-      add_service(custom_service_class)
+      add_service(custom_service_class, opts)
     end
 
     private
 
-    def add_service(provider_class)
-      (@providers ||= Set.new) << provider_class
+    def add_service(provider_class, opts)
+      monitor = provider_class.new
+      if provider_class.respond_to?(:configurable?) && provider_class.configurable?
+        opts.each_key do |key|
+          monitor.config.send("#{key}=", opts[key])
+        end
+      end
+      @providers << monitor
 
-      provider_class
+      monitor
     end
   end
 end
