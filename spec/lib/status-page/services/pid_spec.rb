@@ -51,7 +51,16 @@ describe StatusPage::Services::Pid do
         subject.config.files = nil
         subject.config.pid = -1
 
-        expect(Process).to receive(:getpgid).and_raise(Errno::ESRCH)
+        allow(Process).to receive(:getpgid).and_raise(Errno::ESRCH)
+      end
+
+      it 'fails check! with empty pid file' do
+        subject.config.pid = nil
+        subject.config.files = Tempfile.new('pid').tap{|f| f.close}
+
+        expect {
+          subject.check!
+        }.to raise_error(StatusPage::Services::PidException)
       end
 
       it 'fails check!' do
