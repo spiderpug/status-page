@@ -1,6 +1,6 @@
 # status-page
 
-[![Gem Version](https://badge.fury.io/rb/status-page.svg)](http://badge.fury.io/rb/status-page) [![Build Status](https://travis-ci.org/rails-engine/status-page.svg)](https://travis-ci.org/rails-engine/status-page) [![Dependency Status](https://gemnasium.com/rails-engine/status-page.svg)](https://gemnasium.com/rails-engine/status-page) [![Coverage Status](https://coveralls.io/repos/rails-engine/status-page/badge.svg)](https://coveralls.io/r/rails-engine/status-page)
+[![Build Status](https://travis-ci.org/spiderpug/status-page.svg)](https://travis-ci.org/spiderpug/status-page)
 
 Mountable status page for your Rails application, to check (DB, Cache, Sidekiq, Redis, etc.).
 
@@ -56,6 +56,7 @@ StatusPage.configure do
   self.use :redis, url: 'redis://you-redis-host:3306/1'
   self.use :sidekiq
   self.use :elasticsearch, options: { hosts: ... }, test_index: 'myindex', test_query: { query: ... }
+  self.use :delayedjob, pid_files: ['path/to/pid.1.pid'] # pid_files is optional.
 end
 ```
 
