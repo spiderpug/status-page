@@ -55,6 +55,7 @@ StatusPage.configure do
   # Custom redis url
   self.use :redis, url: 'redis://you-redis-host:3306/1'
   self.use :sidekiq
+  self.use :elasticsearch, options: { hosts: ... }, test_index: 'myindex', test_query: { query: ... }
 end
 ```
 

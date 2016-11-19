@@ -1,5 +1,8 @@
 language: ruby
 rvm:
   - 2.3.1
+services:
+  - elasticsearch
 script:
+  - sleep 10
   - bundle exec rspec

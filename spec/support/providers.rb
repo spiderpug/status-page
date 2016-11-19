@@ -14,7 +14,7 @@ module Services
   end
 
   def stub_elasticsearch_failure
-    allow_any_instance_of(Elasticsearch::Client).to receive(:cluster).and_raise(Exception)
+    allow_any_instance_of(::Elasticsearch::Transport::Client).to receive(:cluster).and_raise(Exception)
   end
 
   def stub_redis_failure

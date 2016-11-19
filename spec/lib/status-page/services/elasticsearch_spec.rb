@@ -8,6 +8,12 @@ describe StatusPage::Services::Elasticsearch do
   end
 
   describe '#check!' do
+    it 'succesfully checks' do
+      expect {
+        subject.check!
+      }.not_to raise_error
+    end
+
     context 'failing' do
       before do
         Services.stub_elasticsearch_failure
