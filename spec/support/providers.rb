@@ -13,6 +13,10 @@ module Services
     allow(ActiveRecord::Migrator).to receive(:current_version).and_raise(Exception)
   end
 
+  def stub_elasticsearch_failure
+    allow_any_instance_of(Elasticsearch::Client).to receive(:cluster).and_raise(Exception)
+  end
+
   def stub_redis_failure
     allow_any_instance_of(Redis).to receive(:get).and_return(false)
   end
