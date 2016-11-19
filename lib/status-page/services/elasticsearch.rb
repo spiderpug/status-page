@@ -36,6 +36,8 @@ module StatusPage
         if (failed_shards = search_result['_shards']['failed']) > 0
           raise ElasticsearchException.new("Search failed on #{failed_shards} shards.")
         end
+
+        nil
       rescue Exception => e
         raise ElasticsearchException.new(e.message)
       end

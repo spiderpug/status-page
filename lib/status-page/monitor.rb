@@ -37,11 +37,11 @@ module StatusPage
 
     def provider_result(provider, request)
       monitor = provider.new(request: request)
-      monitor.check!
+      message = monitor.check!
 
       {
         name: provider.service_name,
-        message: '',
+        message: message,
         status: STATUSES[:ok]
       }
     rescue => e

@@ -27,6 +27,7 @@ module StatusPage
         fetched = redis.get(key)
 
         raise "different values (now: #{time}, fetched: #{fetched})" if fetched != time
+        nil
       rescue Exception => e
         raise RedisException.new(e.message)
       ensure

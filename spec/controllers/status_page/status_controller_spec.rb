@@ -47,7 +47,7 @@ describe StatusPage::StatusController, :type => :controller do
         json = JSON.parse(response.body)
         expect(json['results']).to eq([{
           'name' => 'Database',
-          'message' => '',
+          'message' => nil,
           'status' => 'OK'
         }])
       end
@@ -88,7 +88,7 @@ describe StatusPage::StatusController, :type => :controller do
       expect(json['results'].size).to eq 1
       expect(json['results'][0]).to eq({
         'name' => 'Database',
-        'message' => '',
+        'message' => nil,
         'status' => 'OK'
       })
     end

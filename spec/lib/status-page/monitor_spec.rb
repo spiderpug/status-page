@@ -99,12 +99,12 @@ describe StatusPage do
           :results => [
             {
               name: 'Database',
-              message: '',
+              message: nil,
               status: 'OK'
             },
             {
               name: 'Redis',
-              message: '',
+              message: nil,
               status: 'OK'
             }
           ],
@@ -123,7 +123,7 @@ describe StatusPage do
             :results => [
               {
                 name: 'Database',
-                message: '',
+                message: nil,
                 status: 'OK'
               },
               {
@@ -144,12 +144,12 @@ describe StatusPage do
             :results => [
               {
                 name: 'Database',
-                message: '',
+                message: nil,
                 status: 'OK'
               },
               {
                 name: 'Redis',
-                message: '',
+                message: nil,
                 status: 'OK'
               }
             ],
