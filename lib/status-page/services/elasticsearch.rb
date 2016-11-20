@@ -1,3 +1,5 @@
+require 'benchmark'
+
 module StatusPage
   module Services
     class ElasticsearchException < StandardError; end
@@ -12,6 +14,8 @@ module StatusPage
           @test_search = {query: {}, size: 0}
         end
       end
+
+      prepend Metrics::ServiceAdapter
 
       class << self
         def config_class
@@ -28,7 +32,11 @@ module StatusPage
           raise ElasticsearchException.new("Cluster health is #{color}")
         end
 
-        search_result = es.search(index: config.test_index, body: config.test_search)
+        search_result = nil
+        search_time = Benchmark.ms do
+          search_result = es.search(index: config.test_index, body: config.test_search)
+        end
+
         if search_result['timed_out']
           raise ElasticsearchException.new("Search timeout")
         end
@@ -37,6 +45,7 @@ module StatusPage
           raise ElasticsearchException.new("Search failed on #{failed_shards} shards.")
         end
 
+        record_metric_value('query time', search_time, 'ms')
         nil
       rescue Exception => e
         raise ElasticsearchException.new(e.message)

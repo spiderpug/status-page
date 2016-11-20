@@ -11,6 +11,8 @@ module StatusPage
         end
       end
 
+      prepend Metrics::ServiceAdapter
+
       class << self
         def config_class
           Delayedjob::Configuration
@@ -22,6 +24,8 @@ module StatusPage
       end
 
       def check!
+        record_metrics
+
         check_running_workers!
         check_failed_jobs!
       rescue Exception => e
@@ -38,10 +42,21 @@ module StatusPage
         end
       end
 
-      def check_failed_jobs!
-        failed_jobs = delayed_job.where('last_error IS NOT NULL').count
+      def record_metrics
+        record_metric_value('pending jobs', pending_job_count, '')
+        record_metric_value('failed jobs', failed_job_count, '')
+      end
 
-        if failed_jobs > 0
+      def pending_job_count
+        delayed_job.where(attempts: 0, locked_at: nil).count
+      end
+
+      def failed_job_count
+        delayed_job.where('last_error IS NOT NULL').count
+      end
+
+      def check_failed_jobs!
+        if failed_job_count > 0
           raise DelayedJobException.new("#{failed_jobs} jobs failed.")
         end
       end

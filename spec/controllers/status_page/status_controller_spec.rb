@@ -45,11 +45,12 @@ describe StatusPage::StatusController, :type => :controller do
 
         expect(response).to be_ok
         json = JSON.parse(response.body)
-        expect(json['results']).to eq([{
-          'name' => 'Database',
-          'message' => nil,
-          'status' => 'OK'
-        }])
+
+        expect(json).to have_key('results')
+        results = json['results']
+        expect(results.first['name']).to eq('Database')
+        expect(results.first['status']).to eq('OK')
+        expect(results.first['message']).to be_nil
       end
     end
 
@@ -86,11 +87,10 @@ describe StatusPage::StatusController, :type => :controller do
       json = JSON.parse(response.body)
       expect(json['status']).to eq 'ok'
       expect(json['results'].size).to eq 1
-      expect(json['results'][0]).to eq({
-        'name' => 'Database',
-        'message' => nil,
-        'status' => 'OK'
-      })
+      results = json['results']
+      expect(results.first['name']).to eq('Database')
+      expect(results.first['status']).to eq('OK')
+      expect(results.first['message']).to be_nil
     end
 
     context 'failing' do
@@ -107,11 +107,10 @@ describe StatusPage::StatusController, :type => :controller do
         json = JSON.parse(response.body)
         expect(json['status']).to eq 'service_unavailable'
         expect(json['results'].size).to eq 1
-        expect(json['results'][0]).to eq({
-          'name' => 'Database',
-          'message' => 'Exception',
-          'status' => 'ERROR'
-        })
+        first = json['results'].first
+        expect(first['name']).to eq('Database')
+        expect(first['status']).to eq('ERROR')
+        expect(first['message']).to eq('Exception')
       end
     end
   end

@@ -95,22 +95,19 @@ describe StatusPage do
       end
 
       it 'succesfully checks' do
-        expect(subject.check(request: request)).to eq(
-          :results => [
-            {
-              name: 'Database',
-              message: nil,
-              status: 'OK'
-            },
-            {
-              name: 'Redis',
-              message: nil,
-              status: 'OK'
-            }
-          ],
-          :status => :ok,
-          :timestamp => time
-        )
+        result = subject.check(request: request)
+        expect(result[:status]).to eq(:ok)
+        expect(result[:timestamp]).to eq(time)
+
+        db_result = result[:results].detect{|r| r[:name] == 'Database'}
+        expect(db_result).not_to be_nil
+        expect(db_result[:message]).to be_nil
+        expect(db_result[:status]).to eq('OK')
+
+        redis_result = result[:results].detect{|r| r[:name] == 'Redis'}
+        expect(redis_result).not_to be_nil
+        expect(redis_result[:message]).to be_nil
+        expect(redis_result[:status]).to eq('OK')
       end
 
       context 'redis fails' do
@@ -119,43 +116,37 @@ describe StatusPage do
         end
 
         it 'fails check' do
-          expect(subject.check(request: request)).to eq(
-            :results => [
-              {
-                name: 'Database',
-                message: nil,
-                status: 'OK'
-              },
-              {
-                name: 'Redis',
-                message: "different values (now: #{time.to_s(:db)}, fetched: false)",
-                status: 'ERROR'
-              }
-            ],
-            :status => :service_unavailable,
-            :timestamp => time
-          )
+          result = subject.check(request: request)
+          expect(result[:status]).to eq(:service_unavailable)
+          expect(result[:timestamp]).to eq(time)
+
+          db_result = result[:results].detect{|r| r[:name] == 'Database'}
+          expect(db_result).not_to be_nil
+          expect(db_result[:message]).to be_nil
+          expect(db_result[:status]).to eq('OK')
+
+          redis_result = result[:results].detect{|r| r[:name] == 'Redis'}
+          expect(redis_result).not_to be_nil
+          expect(redis_result[:message]).to eq("different values (now: #{time.to_s(:db)}, fetched: false)")
+          expect(redis_result[:status]).to eq('ERROR')
         end
       end
 
       context 'sidekiq fails' do
         it 'succesfully checks' do
-          expect(subject.check(request: request)).to eq(
-            :results => [
-              {
-                name: 'Database',
-                message: nil,
-                status: 'OK'
-              },
-              {
-                name: 'Redis',
-                message: nil,
-                status: 'OK'
-              }
-            ],
-            :status => :ok,
-            :timestamp => time
-          )
+          result = subject.check(request: request)
+          expect(result[:status]).to eq(:ok)
+          expect(result[:timestamp]).to eq(time)
+
+          db_result = result[:results].detect{|r| r[:name] == 'Database'}
+          expect(db_result).not_to be_nil
+          expect(db_result[:message]).to be_nil
+          expect(db_result[:status]).to eq('OK')
+
+          redis_result = result[:results].detect{|r| r[:name] == 'Redis'}
+          expect(redis_result).not_to be_nil
+          expect(redis_result[:message]).to be_nil
+          expect(redis_result[:status]).to eq('OK')
         end
       end
 
@@ -166,22 +157,19 @@ describe StatusPage do
         end
 
         it 'fails check' do
-          expect(subject.check(request: request)).to eq(
-            :results => [
-              {
-                name: 'Database',
-                message: 'Exception',
-                status: 'ERROR'
-              },
-              {
-                name: 'Redis',
-                message: "different values (now: #{time.to_s(:db)}, fetched: false)",
-                status: 'ERROR'
-              }
-            ],
-            :status => :service_unavailable,
-            :timestamp => time
-          )
+          result = subject.check(request: request)
+          expect(result[:status]).to eq(:service_unavailable)
+          expect(result[:timestamp]).to eq(time)
+
+          db_result = result[:results].detect{|r| r[:name] == 'Database'}
+          expect(db_result).not_to be_nil
+          expect(db_result[:message]).to eq('Exception')
+          expect(db_result[:status]).to eq('ERROR')
+
+          redis_result = result[:results].detect{|r| r[:name] == 'Redis'}
+          expect(redis_result).not_to be_nil
+          expect(redis_result[:message]).to eq("different values (now: #{time.to_s(:db)}, fetched: false)")
+          expect(redis_result[:status]).to eq('ERROR')
         end
       end
     end
@@ -210,17 +198,14 @@ describe StatusPage do
       end
 
       it 'calls error_callback' do
-        expect(subject.check(request: request)).to eq(
-          :results => [
-            {
-              name: 'Database',
-              message: 'Exception',
-              status: 'ERROR'
-            }
-          ],
-          :status => :service_unavailable,
-          :timestamp => time
-        )
+        result = subject.check(request: request)
+        expect(result[:status]).to eq(:service_unavailable)
+        expect(result[:timestamp]).to eq(time)
+
+        db_result = result[:results].detect{|r| r[:name] == 'Database'}
+        expect(db_result).not_to be_nil
+        expect(db_result[:message]).to eq('Exception')
+        expect(db_result[:status]).to eq('ERROR')
 
         expect(test).to be_truthy
       end

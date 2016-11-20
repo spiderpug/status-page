@@ -37,22 +37,29 @@ module StatusPage
 
     def provider_result(provider, request)
       provider.set_request(request)
-      message = provider.check!
 
       data = {
         name: provider.service_name,
-        message: message,
         status: STATUSES[:ok],
       }
-      data
-    rescue => e
-      config.error_callback.call(e) if config.error_callback
 
-      {
-        name: provider.service_name,
-        message: e.message,
-        status: STATUSES[:error]
-      }
+      begin
+        message = provider.check!
+        data[:message] = message
+      rescue => e
+        config.error_callback.call(e) if config.error_callback
+
+        data.merge!({
+          message: e.message,
+          status: STATUSES[:error]
+        })
+      end
+
+      if provider.respond_to?(:graph_data)
+        data.merge!(graph_data: provider.graph_data)
+      end
+
+      data
     end
   end
 end

@@ -24,6 +24,8 @@ module StatusPage
         end
       end
 
+      prepend Metrics::ServiceAdapter
+
       class << self
         def config_class
           Http::Configuration
@@ -38,13 +40,12 @@ module StatusPage
         }.reverse_merge(config.request_options))
 
         if response.success?
-          # metrics:
-          # response.time # total time of request
-          # response.connect_time # time to connect
-          # response.starttransfer_time # time to first byte
           check_response_expectation!(response)
 
-          "#{response.time} ms"
+          record_metric_value('total time', response.time, 's')
+          record_metric_value('connect time', response.connect_time, 's')
+          record_metric_value('time to first byte', response.starttransfer_time, 's')
+          nil
         elsif response.timed_out?
           raise HttpException.new("Request timeout")
         elsif response.code == 0
