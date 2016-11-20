@@ -4,9 +4,12 @@ module StatusPage
       attr_reader :request
       attr_reader :config
 
-      def initialize(request: nil)
+      def initialize(request: nil, title: nil, record_metrics: true)
         @config = nil
         @request = request
+        @title = title
+        @record_metrics = true
+        @record_metrics = record_metrics unless record_metrics.nil?
       end
 
       def set_request(request)

@@ -54,6 +54,8 @@ StatusPage.configure do
   self.use :redis
   # Custom redis url
   self.use :redis, url: 'redis://you-redis-host:3306/1'
+  # Custom service title
+  self.use :redis, title: 'Redis (other.host.com)', url: 'redis://you-other-host:3306/1'
   self.use :sidekiq
   self.use :elasticsearch, options: { hosts: ... }, test_index: 'myindex', test_query: { query: ... }
   self.use :delayedjob, pid_files: ['path/to/pid.1.pid'] # pid_files is optional.
@@ -106,8 +108,6 @@ class CustomService < StatusPage::Services::Base
   private
 
   class << self
-    private
-
     def config_class
       CustomService::Configuration
     end

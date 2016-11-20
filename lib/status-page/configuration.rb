@@ -25,7 +25,10 @@ module StatusPage
     private
 
     def add_service(provider_class, opts)
-      monitor = provider_class.new
+      title = opts.delete(:title)
+      record_metrics = opts.delete(:record_metrics)
+      monitor = provider_class.new(title: title, record_metrics: record_metrics)
+
       if provider_class.respond_to?(:configurable?) && provider_class.configurable?
         opts.each_key do |key|
           monitor.config.send("#{key}=", opts[key])

@@ -13,6 +13,8 @@ module StatusPage
         end
       end
 
+      prepend Metrics::ServiceAdapter
+
       class << self
         def config_class
           Redis::Configuration
@@ -23,10 +25,14 @@ module StatusPage
         time = Time.now.to_s(:db)
 
         redis = ::Redis.new(url: config.url)
-        redis.set(key, time)
-        fetched = redis.get(key)
 
-        raise "different values (now: #{time}, fetched: #{fetched})" if fetched != time
+        time = Benchmark.ms do
+          redis.set(key, time)
+          fetched = redis.get(key)
+
+          raise "different values (now: #{time}, fetched: #{fetched})" if fetched != time
+        end
+        record_metric_value("Write+Read", time, 'ms')
         nil
       rescue Exception => e
         raise RedisException.new(e.message)
