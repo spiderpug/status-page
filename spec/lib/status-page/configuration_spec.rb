@@ -12,7 +12,10 @@ describe StatusPage::Configuration do
       before do
         subject.instance_variable_set('@providers', [])
 
-        stub_const("StatusPage::Services::#{service_name.capitalize}", Class.new)
+        stub_const("StatusPage::Services::#{service_name.capitalize}", Class.new do
+          def initialize(*args)
+          end
+        end)
       end
 
       it "configures #{service_name}" do
