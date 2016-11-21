@@ -1,12 +1,9 @@
 module StatusPage
   module Metrics
-    class Recorder
-      attr_reader :data, :keep, :unit
-
-      def initialize(keep: 5.minutes, unit: 'ms')
+    class MemoryRecorder < BaseRecorder
+      def initialize(scope:, keep: 5.minutes, unit: 'ms')
+        super
         @data = {}
-        @keep = keep
-        @unit = unit
       end
 
       def update(value, override: true)

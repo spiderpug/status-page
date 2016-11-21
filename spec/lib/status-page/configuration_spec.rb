@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe StatusPage::Configuration do
   describe 'defaults' do
+    it { expect(subject.record_metrics).to eq(false) }
+    it { expect(subject).to respond_to(:record_metrics=) }
+    it { expect(subject).to respond_to(:recorder_class=) }
     it { expect(subject.providers).to eq([]) }
     it { expect(subject.error_callback).to be_nil }
     it { expect(subject.basic_auth_credentials).to be_nil }

@@ -19,6 +19,7 @@ module StatusPage
         check_workers!
         check_latency!
         check_redis!
+        nil
       rescue Exception => e
         raise SidekiqException.new(e.message)
       end

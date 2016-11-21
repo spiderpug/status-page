@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe StatusPage::Metrics::TimeSeries do
-  subject { described_class.new(keep: 1.minute) }
+  subject { described_class.new(StatusPage::Services::Database.new, keep: 1.minute) }
 
   context '#record_value' do
     it 'should be empty initially' do
@@ -36,7 +36,7 @@ describe StatusPage::Metrics::TimeSeries do
 
       subject.record_value('error_rate', 500, '')
 
-      expect_any_instance_of(StatusPage::Metrics::Recorder).to receive(:update)\
+      expect_any_instance_of(StatusPage.config.recorder_class).to receive(:update)\
         .with(0, override: false)\
         .and_call_original
       subject.record_error

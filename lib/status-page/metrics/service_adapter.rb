@@ -4,7 +4,7 @@ module StatusPage
       def initialize(*args)
         super
 
-        @time_series = TimeSeries.new()
+        @time_series = TimeSeries.new(self)
         start_worker_thread
       end
 
@@ -15,7 +15,7 @@ module StatusPage
       end
 
       def recording_metrics?
-        @record_metrics
+        metrics_enabled_globally? && @record_metrics
       end
 
       def record_metrics!
@@ -23,21 +23,25 @@ module StatusPage
       end
 
       def record_metric_value(name, value, unit)
-        @time_series.record_value(name, value, unit) if @record_metrics
+        @time_series.record_value(name, value, unit) if recording_metrics?
       end
 
       def graph_data
-        @time_series.data if @record_metrics
+        @time_series.data if recording_metrics?
       end
 
       def check!
         super
-      rescue => e
-        @time_series.record_error if @record_metrics
+      rescue Exception => e
+        @time_series.record_error if recording_metrics?
         raise e
       end
 
       private
+
+      def metrics_enabled_globally?
+        StatusPage.config.record_metrics
+      end
 
       def start_worker_thread
         unless defined?(Rails::Console)

@@ -1,11 +1,13 @@
 module StatusPage
   class Configuration
-    attr_accessor :error_callback, :basic_auth_credentials, :interval
+    attr_accessor :error_callback, :basic_auth_credentials, :interval, :record_metrics, :recorder_class
     attr_reader :providers
 
     def initialize
       @providers = []
       @interval = 10
+      @record_metrics = false
+      @recorder_class = StatusPage::Metrics::MemoryRecorder
     end
 
     def use(service_name, opts = {})

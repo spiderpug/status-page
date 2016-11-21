@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe StatusPage::Metrics::Recorder do
-  subject { described_class.new(keep: 1.minute) }
+describe StatusPage::Metrics::MemoryRecorder do
+  subject { described_class.new(scope: 'test', keep: 1.minute) }
 
   context '#update' do
     it 'should be empty initially' do

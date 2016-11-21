@@ -1,15 +1,15 @@
 module StatusPage
   module Metrics
     class TimeSeries
-      def initialize(names: [], keep: 15.minutes)
+      def initialize(service, keep: 15.minutes)
+        @service = service
         @recorders = {}
         @keep = keep
-        names.each{|name| @recorders[name] = Recorder.new(keep: keep)}
       end
 
       def record_value(name, value, unit)
         if @recorders[name].nil?
-          @recorders[name] = Recorder.new(keep: @keep, unit: unit)
+          @recorders[name] = StatusPage.config.recorder_class.new(scope: [@service.service_name, name].join('-'), keep: @keep, unit: unit)
         end
 
         @recorders[name].update(value)
