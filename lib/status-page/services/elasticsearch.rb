@@ -26,15 +26,16 @@ module StatusPage
       def check!
         es = ::Elasticsearch::Client.new(config.options)
 
+        search_result = nil
+        search_time = Benchmark.ms do
+          search_result = es.search(index: config.test_index, body: config.test_search)
+        end
+        record_metric_value('query time', search_time, 'ms')
+
         cluster_health = es.cluster.health
 
         if (color = cluster_health['status']) != 'green'
           raise ElasticsearchException.new("Cluster health is #{color}")
-        end
-
-        search_result = nil
-        search_time = Benchmark.ms do
-          search_result = es.search(index: config.test_index, body: config.test_search)
         end
 
         if search_result['timed_out']
@@ -45,7 +46,6 @@ module StatusPage
           raise ElasticsearchException.new("Search failed on #{failed_shards} shards.")
         end
 
-        record_metric_value('query time', search_time, 'ms')
         nil
       rescue Exception => e
         raise ElasticsearchException.new(e.message)
