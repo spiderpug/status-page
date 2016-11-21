@@ -11,7 +11,7 @@ module StatusPage
 
         time = Benchmark.ms do
           ActiveRecord::Base.descendants.each do |klass|
-            klass.first
+            klass.first unless klass.abstract_class?
           end
         end
 

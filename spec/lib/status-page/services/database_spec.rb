@@ -8,6 +8,16 @@ describe StatusPage::Services::Database do
   end
 
   describe '#check!' do
+    it 'succesfully checks with ActiveRecord::Base abstract classes' do
+      class X < ActiveRecord::Base
+        self.abstract_class = true
+      end
+
+      expect {
+        subject.check!
+      }.not_to raise_error
+    end
+
     it 'succesfully checks' do
       expect {
         subject.check!
