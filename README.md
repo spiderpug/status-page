@@ -122,6 +122,42 @@ StatusPage.configure do
 end
 ```
 
+### Metric recording
+
+In case you want fancy graphs of various metrics you have to enable metric recording:
+
+```ruby
+StatusPage.configure do
+  self.record_metrics = true
+  # custom classes are possible. MemoryRecorder is the default
+  self.recorder_class = StatusPage::Metrics::MemoryRecorder
+end
+```
+
+You can use the provided ActiveRecord adapter to store metrics data in a database:
+
+```ruby
+# in your application, prepare an ActiveRecord model:
+class MyMetric < ApplicationRecord
+  # t.string :my_scope_col
+  # t.float :f_value
+  # t.timestamps
+end
+
+# attach a recorder class to your model:
+class MyMetricRecorder < StatusPage::Metrics::ActiveRecordRecorder
+  def model; MyMetric; end
+  def scope_column; :my_scope_col; end
+  def value_column; :f_value; end
+  def timestamp_column; :created_at; end
+end
+
+StatusPage.configure do
+  self.record_metrics = true
+  self.recorder_class = MyMetricRecorder
+end
+```
+
 ### Adding a custom error callback
 
 If you need to perform any additional error handling (for example, for additional error reporting), you can configure a custom error callback:
