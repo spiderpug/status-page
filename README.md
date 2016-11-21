@@ -8,7 +8,7 @@ Mounting this gem will add a '/status' route to your application, which can be u
 
 ## Example
 
-<img src="https://cloud.githubusercontent.com/assets/5518/14341727/c12ccdee-fcc6-11e5-8c25-00324d0e9baa.png" />
+<img src="https://cloud.githubusercontent.com/assets/2295856/20490906/e7c2a3d2-b00f-11e6-818f-ea2a4d3cd81f.png" />
 
 ## Install
 
