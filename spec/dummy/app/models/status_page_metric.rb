@@ -1,0 +1,2 @@
+class StatusPageMetric < ApplicationRecord
+end

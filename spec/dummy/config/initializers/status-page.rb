@@ -1,4 +1,6 @@
 StatusPage.configure do
+  self.record_metrics = true
+  self.recorder_class = StatusPageRecorder unless Rails.env.test?
   self.use :cache
   self.use :redis
   self.use :sidekiq
